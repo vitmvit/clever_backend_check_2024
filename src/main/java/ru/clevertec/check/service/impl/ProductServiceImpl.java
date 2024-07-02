@@ -4,6 +4,8 @@ import ru.clevertec.check.model.Product;
 import ru.clevertec.check.reader.ProductReader;
 import ru.clevertec.check.reader.impl.ProductReaderImpl;
 import ru.clevertec.check.service.ProductService;
+import ru.clevertec.check.writer.Writer;
+import ru.clevertec.check.writer.impl.WriterImpl;
 
 import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
 
@@ -13,6 +15,8 @@ import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductReader productReader = new ProductReaderImpl();
+
+    private final Writer writer = new WriterImpl();
 
     /**
      * Поиск продукта по идентификатору.
@@ -28,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
                 return item;
             }
         }
+        writer.writeError(new RuntimeException(BAD_REQUEST));
         throw new RuntimeException(BAD_REQUEST);
     }
 }

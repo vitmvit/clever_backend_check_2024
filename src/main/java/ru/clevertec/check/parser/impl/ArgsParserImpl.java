@@ -82,9 +82,11 @@ public class ArgsParserImpl implements ArgsParser {
                 checkService.showCheck(check);
                 return check;
             } else {
+                writer.writeError(new RuntimeException(NOT_ENOUGH_MONEY));
                 throw new RuntimeException(NOT_ENOUGH_MONEY);
             }
         } else {
+            writer.writeError(new RuntimeException(BAD_REQUEST));
             throw new RuntimeException(BAD_REQUEST);
         }
     }
@@ -118,7 +120,8 @@ public class ArgsParserImpl implements ArgsParser {
         if (matcher.find()) {
             return new BigDecimal(matcher.group(1));
         } else {
-            throw new RuntimeException();
+            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
+            throw new RuntimeException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -266,6 +269,7 @@ public class ArgsParserImpl implements ArgsParser {
             str = str.substring(0, str.length() - 1);
             return str;
         } catch (Exception e) {
+            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
             throw new RuntimeException(INTERNAL_SERVER_ERROR);
         }
     }

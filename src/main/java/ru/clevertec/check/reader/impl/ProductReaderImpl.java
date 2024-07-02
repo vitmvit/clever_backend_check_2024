@@ -2,6 +2,8 @@ package ru.clevertec.check.reader.impl;
 
 import ru.clevertec.check.model.Product;
 import ru.clevertec.check.reader.ProductReader;
+import ru.clevertec.check.writer.Writer;
+import ru.clevertec.check.writer.impl.WriterImpl;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -15,6 +17,8 @@ import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
  * Реализация интерфейса ProductReader для чтения данных о продуктах из CSV-файла.
  */
 public class ProductReaderImpl implements ProductReader {
+
+    private final Writer writer = new WriterImpl();
 
     /**
      * Считывает данные из источника и возвращает список объектов.
@@ -34,6 +38,7 @@ public class ProductReaderImpl implements ProductReader {
             file.close();
             return productList;
         } catch (Exception e) {
+            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
             throw new RuntimeException(INTERNAL_SERVER_ERROR);
         }
     }

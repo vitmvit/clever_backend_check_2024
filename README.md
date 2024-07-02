@@ -59,6 +59,13 @@
 BAD REQUEST
 ```
 
+Содержание файла result.csv:
+
+```
+ERROR;
+BAD REQUEST;
+```
+
 ##### 2. Неизвестная дисконтная карта
 
 ```
@@ -69,6 +76,13 @@ BAD REQUEST
 
 ```
 BAD REQUEST
+```
+
+Содержание файла result.csv:
+
+```
+ERROR;
+BAD REQUEST;
 ```
 
 ##### 3. Неизвестный продукт
@@ -83,6 +97,13 @@ BAD REQUEST
 BAD REQUEST
 ```
 
+Содержание файла result.csv:
+
+```
+ERROR;
+BAD REQUEST;
+```
+
 ##### 4. Нехватка средств на счету
 
 ```
@@ -93,6 +114,13 @@ BAD REQUEST
 
 ```
 NOT ENOUGH MONEY
+```
+
+Содержание файла result.csv:
+
+```
+ERROR;
+NOT ENOUGH MONEY;
 ```
 
 ##### 5. Отсутствие pathToFile
