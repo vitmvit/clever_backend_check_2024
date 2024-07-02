@@ -4,6 +4,8 @@ import ru.clevertec.check.model.DiscountCard;
 import ru.clevertec.check.reader.Reader;
 import ru.clevertec.check.reader.impl.DiscountCardReaderImpl;
 import ru.clevertec.check.service.DiscountCardService;
+import ru.clevertec.check.writer.Writer;
+import ru.clevertec.check.writer.impl.WriterImpl;
 
 import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
 
@@ -13,6 +15,7 @@ import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
 public class DiscountCardServiceImpl implements DiscountCardService {
 
     private final Reader<DiscountCard> discountCardReader = new DiscountCardReaderImpl();
+    private final Writer writer = new WriterImpl();
 
     /**
      * Поиск дисконтной карты по номеру.
@@ -28,6 +31,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
                 return item;
             }
         }
+        writer.writeError(new RuntimeException(BAD_REQUEST));
         throw new RuntimeException(BAD_REQUEST);
     }
 }

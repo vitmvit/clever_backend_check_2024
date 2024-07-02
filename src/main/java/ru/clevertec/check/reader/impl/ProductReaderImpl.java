@@ -2,6 +2,8 @@ package ru.clevertec.check.reader.impl;
 
 import ru.clevertec.check.model.Product;
 import ru.clevertec.check.reader.Reader;
+import ru.clevertec.check.writer.Writer;
+import ru.clevertec.check.writer.impl.WriterImpl;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -17,6 +19,8 @@ import static ru.clevertec.check.constant.Constant.PRODUCT_CSV;
  * Реализует паттерн проектирования Фабричный метод.
  */
 public class ProductReaderImpl implements Reader<Product> {
+
+    private final Writer writer = new WriterImpl();
 
     /**
      * Считывает данные из источника и возвращает список объектов.
@@ -35,6 +39,7 @@ public class ProductReaderImpl implements Reader<Product> {
             file.close();
             return productList;
         } catch (Exception e) {
+            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
             throw new RuntimeException(INTERNAL_SERVER_ERROR);
         }
     }

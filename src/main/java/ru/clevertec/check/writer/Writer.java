@@ -5,4 +5,6 @@ import ru.clevertec.check.model.Check;
 public interface Writer {
 
     void writeCheck(Check check);
+
+    void writeError(Exception e);
 }

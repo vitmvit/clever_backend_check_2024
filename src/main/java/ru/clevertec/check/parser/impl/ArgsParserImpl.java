@@ -5,11 +5,15 @@ import ru.clevertec.check.model.DiscountCard;
 import ru.clevertec.check.model.Product;
 import ru.clevertec.check.model.ProductData;
 import ru.clevertec.check.parser.ArgsParser;
+import ru.clevertec.check.service.CheckService;
 import ru.clevertec.check.service.DiscountCardService;
 import ru.clevertec.check.service.ProductService;
+import ru.clevertec.check.service.impl.CheckServiceImpl;
 import ru.clevertec.check.service.impl.DiscountCardServiceImpl;
 import ru.clevertec.check.service.impl.ProductServiceImpl;
 import ru.clevertec.check.util.RegexValidator;
+import ru.clevertec.check.writer.Writer;
+import ru.clevertec.check.writer.impl.WriterImpl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -30,6 +34,8 @@ public class ArgsParserImpl implements ArgsParser {
 
     private final ProductService productService = new ProductServiceImpl();
     private final DiscountCardService discountCardService = new DiscountCardServiceImpl();
+    private final CheckService checkService = new CheckServiceImpl();
+    private final Writer writer = new WriterImpl();
 
     /**
      * Создание чека.
@@ -57,11 +63,16 @@ public class ArgsParserImpl implements ArgsParser {
             var discountCard = getDiscountCard(inputString).orElse(null);
             var balance = getBalance(inputString);
             if (balance.compareTo(totalSumWithDiscount) > 0) {
-                return new Check(LocalDateTime.now(), productCountList, discountCard, totalSum, totalDiscount, totalSumWithDiscount);
+                var check = new Check(LocalDateTime.now(), productCountList, discountCard, totalSum, totalDiscount, totalSumWithDiscount);
+                writer.writeCheck(check);
+                checkService.showCheck(check);
+                return check;
             } else {
+                writer.writeError(new RuntimeException(NOT_ENOUGH_MONEY));
                 throw new RuntimeException(NOT_ENOUGH_MONEY);
             }
         } else {
+            writer.writeError(new RuntimeException(BAD_REQUEST));
             throw new RuntimeException(BAD_REQUEST);
         }
     }
@@ -95,7 +106,8 @@ public class ArgsParserImpl implements ArgsParser {
         if (matcher.find()) {
             return new BigDecimal(matcher.group(1));
         } else {
-            throw new RuntimeException();
+            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
+            throw new RuntimeException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -211,6 +223,7 @@ public class ArgsParserImpl implements ArgsParser {
             str = str.substring(0, str.length() - 1);
             return str;
         } catch (Exception e) {
+            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
             throw new RuntimeException(INTERNAL_SERVER_ERROR);
         }
     }

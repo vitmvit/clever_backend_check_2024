@@ -62,4 +62,17 @@ public class WriterImpl implements Writer {
             throw new RuntimeException(INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Override
+    public void writeError(Exception e) {
+        try {
+            FileWriter writer = new FileWriter(CHECK_CSV);
+            writer.append("ERROR;\n");
+            writer.append(e.getMessage()).append(";\n");
+            writer.flush();
+            writer.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+        }
+    }
 }
