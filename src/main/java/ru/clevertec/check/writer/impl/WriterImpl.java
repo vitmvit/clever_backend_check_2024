@@ -59,6 +59,12 @@ public class WriterImpl implements Writer {
         }
     }
 
+    /**
+     * Запись сообщения об ошибке в файл.
+     *
+     * @param e          Исключение.
+     * @param saveToFile Путь к файлу, в который будет записано сообщение об ошибке.
+     */
     @Override
     public void writeError(Exception e, String saveToFile) {
         try {
@@ -72,6 +78,11 @@ public class WriterImpl implements Writer {
         }
     }
 
+    /**
+     * Запись сообщения об ошибке в файл result.csv.
+     *
+     * @param e Исключение.
+     */
     @Override
     public void writeError(Exception e) {
         try {
