@@ -19,7 +19,7 @@ public class CheckTestBuilder {
     @Builder.Default
     private List<ProductData> productDataList = List.of(
             new ProductData(7, new Product(1L, "Milk", new BigDecimal("1.07"), 10, true), new BigDecimal("0.75"), new BigDecimal("7.49")),
-            new ProductData(9, new Product(9L, "Packed bananas 1kg", new BigDecimal("1.10"), 25, true), new BigDecimal("0.99"), new BigDecimal("79.90")),
+            new ProductData(9, new Product(9L, "Packed bananas 1kg", new BigDecimal("1.10"), 25, true), new BigDecimal("0.99"), new BigDecimal("9.90")),
             new ProductData(10, new Product(12L, "Packed chicken breasts 1kg", new BigDecimal("10.75"), 18, false), new BigDecimal("4.30"), new BigDecimal("107.50")));
 
     @Builder.Default
