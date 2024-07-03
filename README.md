@@ -1,39 +1,42 @@
 # clever_backend_check_2024
 
-## Задача 2
+## Задача 3
 
 ### Запуск приложения в консоли:
 
     ```
-    java -cp src ./src/main/java/ru/clevertec/check/CheckRunner.java 1-7 9-9 12-10 discountCard=3333 balanceDebitCard=1000 pathToFile=src/main/resources/products.csv saveToFile=src/main/resources/saveToFile.csv 
+    java -cp src ./src/main/java/ru/clevertec/check/CheckRunner.java 1-7 9-9 12-10 discountCard=3333 balanceDebitCard=10000 saveToFile=src/main/resources/saveToFile.csv datasource.url=jdbc:postgresql://localhost:5432/check datasource.username=root datasource.password=root"
     ```
 
 ### Реализация
 
 Для удобства файл с данными о товарах был размещен в папке resources, также как и saveToFile.
 
-1. Реализовано считывание списка товаров из внешнего файла.
-2. Реализовано сохранение данных чека в указанный CSV-файл.
-3. Данные по картам хранятся в resources/discountCards.csv.
-4. Итоговый чек сохраняется в result.csv.
+1. Замена хранения исходных данных (схема 8, 9) в файлах на хранение в таблицах PostgreSQL: product и discount_card.
+2. Репозипории реализованы с помощью JDBC (org.postgresql.Driver).
+3. Убран параметр pathToFile.
+4. DDL/DML операции хранятся в файле src/main/resources/data.sql
 5. Формат ввода:
 
     ```
-    id-quantity discountCard=xxxx balanceDebitCard=xxxx pathToFile=XXXX saveToFile=xxxx
+    id-quantity discountCard=xxxx balanceDebitCard=xxxx saveToFile=xxxx datasource.url=ххх datasource.username=ххх datasource.password=ххх
     ```
 
    где:
-    - id - идентификатор товара;
-    - quantity - количество товара;
-    - discountCard=xxxx - название и номер дисконтной карты;
-    - balanceDebitCard=xxxx - баланс на дебетовой карте;
-    - pathToFile - файл, откуда читаются данные о продуктах;
-    - saveToFile - файл, куда созраняется чек.
+   - id - идентификатор товара;
+   - quantity - количество товара;
+   - discountCard=xxxx - название и номер дисконтной карты;
+   - balanceDebitCard=xxxx - баланс на дебетовой карте;
+   - saveToFile - файл, куда созраняется чек;
+   - datasource.url - путь к бд;
+   - datasource.username - имя пользователя;
+   - datasource.password - пароль.
 
 6. Если в чеке есть оптовые товары и количество оптового товара >= 5, то на каждый такой товар налагается скидка в
    размере 10%.
 7. Если присутсвует дисконтная карта, на все товары, кроме оптовых, которых >= 5, налагается скидка, соответствующая
    карте.
+8. Учтены возможные дубликаты товаров в чеке.
 
 ### Тестирование
 
