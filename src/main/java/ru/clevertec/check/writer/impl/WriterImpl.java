@@ -63,6 +63,11 @@ public class WriterImpl implements Writer {
         }
     }
 
+    /**
+     * Запись сообщения об ошибке в файл result.csv.
+     *
+     * @param e Исключение.
+     */
     @Override
     public void writeError(Exception e) {
         try {
