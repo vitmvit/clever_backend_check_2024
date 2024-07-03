@@ -18,9 +18,7 @@ import ru.clevertec.check.writer.impl.WriterImpl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -48,6 +46,9 @@ public class ArgsParserImpl implements ArgsParser {
 
         // Проверить валидность входной строки
         if (RegexValidator.isValid(inputString, VALIDATION_REGEX)) {
+
+            inputString = combineDuplicate(inputString);
+
             var productCountList = extractProductCount(inputString);
 
             // Рассчитать общую сумму
@@ -78,6 +79,41 @@ public class ArgsParserImpl implements ArgsParser {
     }
 
     /**
+     * Объединяет дублирующиеся записи о продукте в строке, сохраняя итоговое количество каждого продукта.
+     * Пример:
+     * combineDuplicate("1-2 2-3 1-5") == "1-7 2-3"
+     *
+     * @param input строка, содержащая список пар id-количество через пробелы
+     * @return обновленную строку со скомбинированными дубликатами
+     */
+    private String combineDuplicate(String input) {
+        String products = getProductsString(input);
+        String[] pairs = products.split(" ");
+
+        Map<Integer, Integer> productQuantities = new HashMap<>();
+        for (String pair : pairs) {
+            String[] parts = pair.split("-");
+            int id = Integer.parseInt(parts[0]);
+            int quantity = Integer.parseInt(parts[1]);
+
+            // Если id товара уже существует в карте, суммируем количество товара
+            if (productQuantities.containsKey(id)) {
+                productQuantities.put(id, productQuantities.get(id) + quantity);
+            } else {
+                // В противном случае добавляем новую связку в карту
+                productQuantities.put(id, quantity);
+            }
+        }
+
+        StringBuilder resultProductsString = new StringBuilder();
+        for (Map.Entry<Integer, Integer> entry : productQuantities.entrySet()) {
+            resultProductsString.append(entry.getKey()).append("-").append(entry.getValue()).append(" ");
+        }
+        resultProductsString.deleteCharAt(resultProductsString.length() - 1);
+        return input.replaceAll(PRODUCTS_REGEX, resultProductsString.toString());
+    }
+
+    /**
      * Получение дисконтной карты.
      *
      * @param input Входная строка.
@@ -105,6 +141,23 @@ public class ArgsParserImpl implements ArgsParser {
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             return new BigDecimal(matcher.group(1));
+        } else {
+            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
+            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Получение строки списка товаров.
+     *
+     * @param input Входная строка.
+     * @return Баланс.
+     */
+    private String getProductsString(String input) {
+        Pattern pattern = Pattern.compile(PRODUCTS_REGEX);
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            return matcher.group(1);
         } else {
             writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
             throw new RuntimeException(INTERNAL_SERVER_ERROR);
@@ -187,7 +240,12 @@ public class ArgsParserImpl implements ArgsParser {
             Long productId = Long.parseLong(parts[0]);
             int count = Integer.parseInt(parts[1]);
 
+            // Если не хватает товара на складе
             var product = productService.findById(productId);
+            if (product.getQuantityInStock() < count) {
+                writer.writeError(new RuntimeException(BAD_REQUEST));
+                throw new RuntimeException(BAD_REQUEST);
+            }
 
             // Расчет общей суммы по товару
             var totalSum = product.getPrice().multiply(new BigDecimal(count));

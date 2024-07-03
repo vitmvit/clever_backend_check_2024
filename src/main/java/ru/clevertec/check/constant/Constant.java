@@ -18,6 +18,7 @@ public class Constant {
     // regex
     public static final String VALIDATION_REGEX = "((\\d+[-]{1}\\d+\\s+){1,}(\\d+[-]{1}\\d+){1})(\\s{1}discountCard=\\d{4})?(\\s{1}balanceDebitCard=-?(\\d+)([.]\\d+{1,2})?){1}";
     public static final String PRODUCT_REGEX = "(\\d+[-]{1}\\d+)";
+    public static final String PRODUCTS_REGEX = "((\\d+[-]{1}\\d+\\s+){1,}(\\d+[-]{1}\\d+){1})";
     public static final String DISCOUNT_CARD_REGEX = "discountCard=(\\d{4})";
     public static final String BALANCE_REGEX = "balanceDebitCard=-?(\\d+)([.]\\d+{1,2})?";
 
