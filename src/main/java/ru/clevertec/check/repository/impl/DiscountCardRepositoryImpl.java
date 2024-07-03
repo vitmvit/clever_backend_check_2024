@@ -17,24 +17,19 @@ import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
  */
 public class DiscountCardRepositoryImpl implements DiscountCardRepository {
 
-    private final Optional<Connection> connection;
-
-    public DiscountCardRepositoryImpl(String url, String username, String password) {
-        this.connection = new DbConnection().getConnection(url, username, password);
-    }
-
     /**
      * Поиск карточки скидок по номеру.
      *
      * @param number Номер карты клиента.
-     * @return Optional<DiscountCard> Объект карточки скидок.
+     * @return DiscountCard Объект карточки скидок.
      */
     @Override
-    public DiscountCard findByNumber(Short number) {
+    public DiscountCard findByNumber(Integer number, String url, String username, String password) {
+        Optional<Connection> connection = new DbConnection().getConnection(url, username, password);
         if (connection.isPresent()) {
-            String sql = "SELECT id, number, amount FROM product WHERE number = ?";
+            String sql = "SELECT id, number, amount FROM discount_card WHERE number = ?";
             try (PreparedStatement ps = connection.get().prepareStatement(sql)) {
-                ps.setShort(1, number);
+                ps.setInt(1, number);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
                     DiscountCard result = new DiscountCard();

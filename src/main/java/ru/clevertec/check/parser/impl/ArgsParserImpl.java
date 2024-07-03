@@ -95,7 +95,7 @@ public class ArgsParserImpl implements ArgsParser {
         Matcher matcher = pattern.matcher(input);
 
         if (matcher.find()) {
-            return Optional.of(discountCardService.findByNumber(Short.parseShort(matcher.group(1)), url, username, password));
+            return Optional.of(discountCardService.findByNumber(Integer.parseInt(matcher.group(1)), url, username, password));
         } else {
             return Optional.empty();
         }

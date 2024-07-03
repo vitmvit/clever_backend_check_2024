@@ -19,7 +19,6 @@ public class CheckServiceImpl implements CheckService {
      */
     @Override
     public void showCheck(Check check) {
-
         // Вывод даты и времени операции
         System.out.println("DATE: " + check.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         System.out.println("TIME: " + check.getDate().format(DateTimeFormatter.ofPattern("HH:mm:ss")));

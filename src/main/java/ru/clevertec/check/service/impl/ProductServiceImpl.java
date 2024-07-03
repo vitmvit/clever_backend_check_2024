@@ -15,6 +15,7 @@ import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
 public class ProductServiceImpl implements ProductService {
 
     private final Writer writer = new WriterImpl();
+    private final ProductRepository productRepository = new ProductRepositoryImpl();
 
     /**
      * Найти продукт по идентификатору
@@ -27,8 +28,7 @@ public class ProductServiceImpl implements ProductService {
      */
     public Product findById(Long id, String url, String username, String password) {
         try {
-            ProductRepository productRepository = new ProductRepositoryImpl(url, username, password);
-            return productRepository.findById(id);
+            return productRepository.findById(id, url, username, password);
         } catch (Exception e) {
             writer.writeError(new RuntimeException(BAD_REQUEST));
             throw new RuntimeException(BAD_REQUEST);

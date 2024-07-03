@@ -17,12 +17,6 @@ import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
  */
 public class ProductRepositoryImpl implements ProductRepository {
 
-    private final Optional<Connection> connection;
-
-    public ProductRepositoryImpl(String url, String username, String password) {
-        this.connection = new DbConnection().getConnection(url, username, password);
-    }
-
     /**
      * Поиск продукта по его идентификатору.
      *
@@ -32,7 +26,8 @@ public class ProductRepositoryImpl implements ProductRepository {
      *                          с базой данных или ошибка выполнения запроса к базе данных.
      */
     @Override
-    public Product findById(Long id) {
+    public Product findById(Long id, String url, String username, String password) {
+        Optional<Connection> connection = new DbConnection().getConnection(url, username, password);
         if (connection.isPresent()) {
             String sql = "SELECT id, description, price, quantity_in_stock, wholesale_product FROM product WHERE id = ?";
             try (PreparedStatement ps = connection.get().prepareStatement(sql)) {
@@ -41,7 +36,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                 if (rs.next()) {
                     Product result = new Product();
                     result.setId(rs.getLong("id"));
-                    result.setDescription("description");
+                    result.setDescription(rs.getString("description"));
                     result.setPrice(rs.getBigDecimal("price"));
                     result.setQuantityInStock(rs.getInt("quantity_in_stock"));
                     result.setWholesaleProduct(rs.getBoolean("wholesale_product"));

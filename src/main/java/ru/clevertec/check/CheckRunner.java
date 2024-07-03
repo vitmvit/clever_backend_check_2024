@@ -14,7 +14,8 @@ public class CheckRunner {
      * @param args аргументы командной строки.
      */
     public static void main(String[] args) {
-
+//        1-7 9-9 12-10 discountCard=3333 balanceDebitCard=10000 saveToFile=src/main/resources/saveToFile.csv datasource.url=jdbc:postgresql://localhost:5432/check datasource.username=root datasource.password=root
+//        1-7 9-9 12-100 discountCard=3333 pathToFile=src/main/resources/products.csv saveToFile=src/main/resources/saveToFile.csv datasource.url=jdbc:postgresql://localhost:5432/check datasource.username=root datasource.password=root
         var parser = new ArgsParserImpl();
         parser.getCheck(args);
     }

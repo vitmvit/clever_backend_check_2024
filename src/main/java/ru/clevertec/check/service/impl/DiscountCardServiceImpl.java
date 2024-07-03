@@ -15,6 +15,7 @@ import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
 public class DiscountCardServiceImpl implements DiscountCardService {
 
     private final Writer writer = new WriterImpl();
+    private final DiscountCardRepository productRepository = new DiscountCardRepositoryImpl();
 
     /**
      * Найти карточку скидки по номеру
@@ -25,10 +26,9 @@ public class DiscountCardServiceImpl implements DiscountCardService {
      * @param password пароль для подключения к БД
      * @return объект карточки скидки
      */
-    public DiscountCard findByNumber(Short number, String url, String username, String password) {
+    public DiscountCard findByNumber(Integer number, String url, String username, String password) {
         try {
-            DiscountCardRepository productRepository = new DiscountCardRepositoryImpl(url, username, password);
-            return productRepository.findByNumber(number);
+            return productRepository.findByNumber(number, url, username, password);
         } catch (Exception e) {
             writer.writeError(new RuntimeException(BAD_REQUEST));
             throw new RuntimeException(BAD_REQUEST);

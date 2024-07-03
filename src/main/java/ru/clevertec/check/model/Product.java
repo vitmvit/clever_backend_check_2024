@@ -1,6 +1,7 @@
 package ru.clevertec.check.model;
 
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 import java.math.BigDecimal;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 public class Product {
 
     private Long id;

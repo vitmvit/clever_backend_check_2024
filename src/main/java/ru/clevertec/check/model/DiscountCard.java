@@ -1,6 +1,7 @@
 package ru.clevertec.check.model;
 
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 /**
  * Модель дисконтной карты.
@@ -10,6 +11,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 public class DiscountCard {
 
     private Long id;

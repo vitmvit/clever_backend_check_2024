@@ -4,5 +4,5 @@ import ru.clevertec.check.model.DiscountCard;
 
 public interface DiscountCardRepository {
 
-    DiscountCard findByNumber(Short number);
+    DiscountCard findByNumber(Integer number, String url, String username, String password);
 }

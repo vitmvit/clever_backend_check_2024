@@ -5,19 +5,18 @@ CREATE SEQUENCE discount_card_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 92233720368
 CREATE TABLE "public"."discount_card"
 (
     "id"     bigint DEFAULT nextval('discount_card_id_seq') NOT NULL,
-    "number" integer UNIQUE,
-    "amount" smallint,
-    CONSTRAINT "discount_card_pkey" PRIMARY KEY ("id")
-) WITH (oids = false);
-
-CREATE TABLE "public"."discount_card"
-(
-    "id"     bigint DEFAULT nextval('discount_card_id_seq') NOT NULL,
     "number" integer,
     "amount" smallint,
     CONSTRAINT "discount_card_number_key" UNIQUE ("number"),
     CONSTRAINT "discount_card_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
+
+TRUNCATE "discount_card";
+INSERT INTO "discount_card" ("id", "number", "amount")
+VALUES (1, 1111, 3),
+       (2, 2222, 3),
+       (3, 3333, 4),
+       (4, 4444, 5);
 
 DROP TABLE IF EXISTS "product";
 DROP SEQUENCE IF EXISTS product_id_seq;
