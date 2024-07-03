@@ -42,8 +42,12 @@ public class ArgsParserImpl implements ArgsParser {
      * @return Сгенерированный чек.
      */
     public Check getCheck(String[] args) {
+        if (args.length == 0) {
+            writer.writeError(new RuntimeException(BAD_REQUEST));
+            throw new RuntimeException(BAD_REQUEST);
+        }
         var inputString = arrayToString(args);
-        // Проверить валидность входной строки
+        // Проверка валидности входной строки
         if (RegexValidator.isValid(inputString, VALIDATION_REGEX)) {
             inputString = combineDuplicate(inputString);
             var saveToFile = getSaveToFile(inputString);
