@@ -1,5 +1,6 @@
 package ru.clevertec.check.service.impl;
 
+import ru.clevertec.check.exception.NotFoundException;
 import ru.clevertec.check.model.Product;
 import ru.clevertec.check.reader.Reader;
 import ru.clevertec.check.reader.impl.ProductReaderImpl;
@@ -7,7 +8,7 @@ import ru.clevertec.check.service.ProductService;
 import ru.clevertec.check.writer.Writer;
 import ru.clevertec.check.writer.impl.WriterImpl;
 
-import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
+import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
 
 /**
  * Реализация сервиса продуктов.
@@ -22,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
      *
      * @param id Идентификатор продукта.
      * @return Продукт.
-     * @throws RuntimeException Если продукт с указанным идентификатором не найден.
+     * @throws NotFoundException Если продукт с указанным идентификатором не найден.
      */
     public Product findById(Long id) {
         var productList = productReader.read();
@@ -31,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
                 return item;
             }
         }
-        writer.writeError(new RuntimeException(BAD_REQUEST));
-        throw new RuntimeException(BAD_REQUEST);
+        writer.writeError(new NotFoundException(INTERNAL_SERVER_ERROR));
+        throw new NotFoundException(INTERNAL_SERVER_ERROR);
     }
 }

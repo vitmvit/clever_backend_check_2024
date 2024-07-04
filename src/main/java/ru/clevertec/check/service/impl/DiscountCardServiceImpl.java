@@ -1,5 +1,6 @@
 package ru.clevertec.check.service.impl;
 
+import ru.clevertec.check.exception.NotFoundException;
 import ru.clevertec.check.model.DiscountCard;
 import ru.clevertec.check.reader.Reader;
 import ru.clevertec.check.reader.impl.DiscountCardReaderImpl;
@@ -7,7 +8,7 @@ import ru.clevertec.check.service.DiscountCardService;
 import ru.clevertec.check.writer.Writer;
 import ru.clevertec.check.writer.impl.WriterImpl;
 
-import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
+import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
 
 /**
  * Реализация сервиса дисконтных карт.
@@ -22,7 +23,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
      *
      * @param number Номер дисконтной карты.
      * @return Дисконтная карта.
-     * @throws RuntimeException Если дисконтная карта с указанным номером не найдена.
+     * @throws NotFoundException Если дисконтная карта с указанным номером не найдена.
      */
     public DiscountCard findByNumber(Short number) {
         var discountCardList = discountCardReader.read();
@@ -31,7 +32,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
                 return item;
             }
         }
-        writer.writeError(new RuntimeException(BAD_REQUEST));
-        throw new RuntimeException(BAD_REQUEST);
+        writer.writeError(new NotFoundException(INTERNAL_SERVER_ERROR));
+        throw new NotFoundException(INTERNAL_SERVER_ERROR);
     }
 }

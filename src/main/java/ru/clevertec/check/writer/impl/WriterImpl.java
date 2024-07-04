@@ -1,5 +1,6 @@
 package ru.clevertec.check.writer.impl;
 
+import ru.clevertec.check.exception.WriterException;
 import ru.clevertec.check.model.Check;
 import ru.clevertec.check.writer.Writer;
 
@@ -59,7 +60,7 @@ public class WriterImpl implements Writer {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            throw new WriterException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -77,7 +78,7 @@ public class WriterImpl implements Writer {
             writer.flush();
             writer.close();
         } catch (IOException ex) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            throw new WriterException(INTERNAL_SERVER_ERROR);
         }
     }
 }
