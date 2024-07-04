@@ -1,6 +1,8 @@
 package ru.clevertec.check.repository.impl;
 
 import ru.clevertec.check.connection.DbConnection;
+import ru.clevertec.check.exception.ConnectionException;
+import ru.clevertec.check.exception.NotFoundException;
 import ru.clevertec.check.model.DiscountCard;
 import ru.clevertec.check.repository.DiscountCardRepository;
 
@@ -39,9 +41,9 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
                     return result;
                 }
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new NotFoundException(INTERNAL_SERVER_ERROR);
             }
         }
-        throw new RuntimeException(INTERNAL_SERVER_ERROR);
+        throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 }

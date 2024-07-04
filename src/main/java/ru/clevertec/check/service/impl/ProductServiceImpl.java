@@ -1,5 +1,6 @@
 package ru.clevertec.check.service.impl;
 
+import ru.clevertec.check.exception.NotFoundException;
 import ru.clevertec.check.model.Product;
 import ru.clevertec.check.repository.ProductRepository;
 import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
@@ -7,7 +8,7 @@ import ru.clevertec.check.service.ProductService;
 import ru.clevertec.check.writer.Writer;
 import ru.clevertec.check.writer.impl.WriterImpl;
 
-import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
+import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
 
 /**
  * Реализация сервиса продуктов.
@@ -30,8 +31,8 @@ public class ProductServiceImpl implements ProductService {
         try {
             return productRepository.findById(id, url, username, password);
         } catch (Exception e) {
-            writer.writeError(new RuntimeException(BAD_REQUEST));
-            throw new RuntimeException(BAD_REQUEST);
+            writer.writeError(new NotFoundException(INTERNAL_SERVER_ERROR));
+            throw new NotFoundException(INTERNAL_SERVER_ERROR);
         }
     }
 }

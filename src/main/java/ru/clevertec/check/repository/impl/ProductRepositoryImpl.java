@@ -1,6 +1,8 @@
 package ru.clevertec.check.repository.impl;
 
 import ru.clevertec.check.connection.DbConnection;
+import ru.clevertec.check.exception.ConnectionException;
+import ru.clevertec.check.exception.NotFoundException;
 import ru.clevertec.check.model.Product;
 import ru.clevertec.check.repository.ProductRepository;
 
@@ -43,9 +45,9 @@ public class ProductRepositoryImpl implements ProductRepository {
                     return result;
                 }
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new NotFoundException(INTERNAL_SERVER_ERROR);
             }
         }
-        throw new RuntimeException(INTERNAL_SERVER_ERROR);
+        throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 }

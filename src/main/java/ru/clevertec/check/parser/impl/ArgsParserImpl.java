@@ -1,5 +1,6 @@
 package ru.clevertec.check.parser.impl;
 
+import ru.clevertec.check.exception.ParseException;
 import ru.clevertec.check.model.Check;
 import ru.clevertec.check.model.DiscountCard;
 import ru.clevertec.check.model.Product;
@@ -43,8 +44,8 @@ public class ArgsParserImpl implements ArgsParser {
      */
     public Check getCheck(String[] args) {
         if (args.length == 0) {
-            writer.writeError(new RuntimeException(BAD_REQUEST));
-            throw new RuntimeException(BAD_REQUEST);
+            writer.writeError(new ParseException(BAD_REQUEST));
+            throw new ParseException(BAD_REQUEST);
         }
         var inputString = arrayToString(args);
         // Проверка валидности входной строки
@@ -52,8 +53,8 @@ public class ArgsParserImpl implements ArgsParser {
             inputString = combineDuplicate(inputString);
             var saveToFile = getSaveToFile(inputString);
             if (saveToFile == null) {
-                writer.writeError(new RuntimeException(BAD_REQUEST));
-                throw new RuntimeException(BAD_REQUEST);
+                writer.writeError(new ParseException(BAD_REQUEST));
+                throw new ParseException(BAD_REQUEST);
             }
             var datasourceUrl = getDatasourceUrl(inputString);
             var datasourceUsername = getDatasourceUsername(inputString);
@@ -78,12 +79,12 @@ public class ArgsParserImpl implements ArgsParser {
                 checkService.showCheck(check);
                 return check;
             } else {
-                writer.writeError(new RuntimeException(NOT_ENOUGH_MONEY));
-                throw new RuntimeException(NOT_ENOUGH_MONEY);
+                writer.writeError(new ParseException(NOT_ENOUGH_MONEY));
+                throw new ParseException(NOT_ENOUGH_MONEY);
             }
         } else {
-            writer.writeError(new RuntimeException(BAD_REQUEST));
-            throw new RuntimeException(BAD_REQUEST);
+            writer.writeError(new ParseException(BAD_REQUEST));
+            throw new ParseException(BAD_REQUEST);
         }
     }
 
@@ -151,8 +152,8 @@ public class ArgsParserImpl implements ArgsParser {
         if (matcher.find()) {
             return new BigDecimal(matcher.group(1));
         } else {
-            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            writer.writeError(new ParseException(INTERNAL_SERVER_ERROR));
+            throw new ParseException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -168,8 +169,8 @@ public class ArgsParserImpl implements ArgsParser {
         if (matcher.find()) {
             return matcher.group(1);
         } else {
-            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            writer.writeError(new ParseException(INTERNAL_SERVER_ERROR));
+            throw new ParseException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -182,11 +183,7 @@ public class ArgsParserImpl implements ArgsParser {
     private String getSaveToFile(String input) {
         Pattern pattern = Pattern.compile(SAVE_TO_FILE_REGEX);
         Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group(1);
-        } else {
-            return null;
-        }
+        return matcher.find() ? matcher.group(1) : null;
     }
 
     /**
@@ -198,11 +195,7 @@ public class ArgsParserImpl implements ArgsParser {
     private String getDatasourceUrl(String input) {
         Pattern pattern = Pattern.compile(DATASOURCE_URL_REGEX);
         Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group(1);
-        } else {
-            return null;
-        }
+        return matcher.find() ? matcher.group(1) : null;
     }
 
     /**
@@ -214,11 +207,7 @@ public class ArgsParserImpl implements ArgsParser {
     private String getDatasourceUsername(String input) {
         Pattern pattern = Pattern.compile(DATASOURCE_USERNAME_REGEX);
         Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group(1);
-        } else {
-            return null;
-        }
+        return matcher.find() ? matcher.group(1) : null;
     }
 
     /**
@@ -230,11 +219,7 @@ public class ArgsParserImpl implements ArgsParser {
     private String getDatasourcePassword(String input) {
         Pattern pattern = Pattern.compile(DATASOURCE_PASSWORD_REGEX);
         Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group(1);
-        } else {
-            return null;
-        }
+        return matcher.find() ? matcher.group(1) : null;
     }
 
     /**
@@ -313,7 +298,12 @@ public class ArgsParserImpl implements ArgsParser {
             Long productId = Long.parseLong(parts[0]);
             int count = Integer.parseInt(parts[1]);
 
+            // Если не хватает товара на складе
             var product = productService.findById(productId, url, username, password);
+            if (product.getQuantityInStock() < count) {
+                writer.writeError(new ParseException(BAD_REQUEST));
+                throw new ParseException(BAD_REQUEST);
+            }
 
             // Расчет общей суммы по товару
             var totalSum = product.getPrice().multiply(new BigDecimal(count));
@@ -349,8 +339,8 @@ public class ArgsParserImpl implements ArgsParser {
             str = str.substring(0, str.length() - 1);
             return str;
         } catch (Exception e) {
-            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            writer.writeError(new ParseException(INTERNAL_SERVER_ERROR));
+            throw new ParseException(INTERNAL_SERVER_ERROR);
         }
     }
 }
