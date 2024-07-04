@@ -1,11 +1,12 @@
 plugins {
     id 'java'
+    id 'war'
     id "io.freefair.lombok" version "8.4"
 }
 
 group 'ru.clevertec.check'
 version '1.0'
-
+archivesBaseName = 'clevertec-check'
 repositories {
     mavenCentral()
 }
@@ -13,6 +14,7 @@ repositories {
 dependencies {
     implementation 'org.postgresql:postgresql:42.6.0'
     implementation "org.mapstruct:mapstruct:1.4.1.Final"
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 
     testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
     testImplementation 'org.assertj:assertj-core:3.26.0'

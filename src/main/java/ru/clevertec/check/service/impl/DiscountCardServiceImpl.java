@@ -20,6 +20,25 @@ public class DiscountCardServiceImpl implements DiscountCardService {
     /**
      * Найти карточку скидки по номеру
      *
+     * @param id       номер карты
+     * @param url      адрес БД
+     * @param username имя пользователя для подключения к БД
+     * @param password пароль для подключения к БД
+     * @return объект карточки скидки
+     */
+    @Override
+    public DiscountCard findById(Long id, String url, String username, String password) {
+        try {
+            return productRepository.findById(id, url, username, password);
+        } catch (Exception e) {
+            writer.writeError(new RuntimeException(BAD_REQUEST));
+            throw new RuntimeException(BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Найти карточку скидки по номеру
+     *
      * @param number   номер карты
      * @param url      адрес БД
      * @param username имя пользователя для подключения к БД
