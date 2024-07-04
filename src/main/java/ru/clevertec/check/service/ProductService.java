@@ -1,8 +1,16 @@
 package ru.clevertec.check.service;
 
-import ru.clevertec.check.model.Product;
+import ru.clevertec.check.model.dto.ProductDto;
+import ru.clevertec.check.model.dto.create.ProductCreateDto;
+import ru.clevertec.check.model.dto.update.ProductUpdateDto;
 
 public interface ProductService {
 
-    Product findById(Long id, String url, String username, String password);
+    ProductDto findById(Long id);
+
+    ProductDto create(ProductCreateDto dto);
+
+    ProductDto update(Long id, ProductUpdateDto dto);
+
+    void delete(Long id);
 }

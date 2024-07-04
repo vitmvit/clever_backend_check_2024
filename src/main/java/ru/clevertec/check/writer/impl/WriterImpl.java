@@ -1,6 +1,7 @@
 package ru.clevertec.check.writer.impl;
 
-import ru.clevertec.check.model.Check;
+import ru.clevertec.check.exception.WriterException;
+import ru.clevertec.check.model.entity.Check;
 import ru.clevertec.check.writer.Writer;
 
 import java.io.FileWriter;
@@ -19,9 +20,10 @@ public class WriterImpl implements Writer {
      *
      * @param check Чек.
      */
-    @Override
-    public void writeCheck(Check check, String saveToFile) {
-        try (FileWriter writer = new FileWriter(saveToFile)) {
+    public void writeCheck(Check check) {
+        try {
+            FileWriter writer = new FileWriter(CHECK_CSV);
+
             // Запись даты и времени операции
             writer.append("DATE;TIME;\n");
             writer.append(check.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))).append(";");
@@ -54,45 +56,10 @@ public class WriterImpl implements Writer {
                     .append(String.valueOf(check.getTotalSum())).append(CURRENCY).append(";")
                     .append(String.valueOf(check.getTotalDiscount())).append(CURRENCY).append(";")
                     .append(String.valueOf(check.getTotalSumWithDiscount())).append(CURRENCY).append(";\n");
+            writer.flush();
+            writer.close();
         } catch (IOException e) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Запись сообщения об ошибке в файл.
-     *
-     * @param e          Исключение.
-     * @param saveToFile Путь к файлу, в который будет записано сообщение об ошибке.
-     */
-    @Override
-    public void writeError(Exception e, String saveToFile) {
-        try {
-            FileWriter writer = new FileWriter(saveToFile);
-            writer.append("ERROR;\n");
-            writer.append(e.getMessage()).append(";\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Запись сообщения об ошибке в файл result.csv.
-     *
-     * @param e Исключение.
-     */
-    @Override
-    public void writeError(Exception e) {
-        try {
-            FileWriter writer = new FileWriter(ERROR_CSV);
-            writer.append("ERROR;\n");
-            writer.append(e.getMessage()).append(";\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            throw new WriterException(INTERNAL_SERVER_ERROR);
         }
     }
 }

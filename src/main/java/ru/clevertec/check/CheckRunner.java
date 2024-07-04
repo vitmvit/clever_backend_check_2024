@@ -1,7 +1,7 @@
 package ru.clevertec.check;
 
 
-import ru.clevertec.check.parser.impl.ArgsParserImpl;
+//import ru.clevertec.check.parser.impl.ArgsParserImpl;
 
 /**
  * Точка входа в приложение.
@@ -23,7 +23,7 @@ public class CheckRunner {
 //        datasource.url=jdbc:postgresql://localhost:5432/check
 //        datasource.username=root
 //        datasource.password=root
-        var parser = new ArgsParserImpl();
-        parser.getCheck(args);
+//        var parser = new ArgsParserImpl();
+//        parser.getCheck(args);
     }
 }

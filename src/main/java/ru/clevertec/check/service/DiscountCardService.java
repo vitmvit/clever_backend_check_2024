@@ -1,10 +1,18 @@
 package ru.clevertec.check.service;
 
-import ru.clevertec.check.model.DiscountCard;
+import ru.clevertec.check.model.dto.DiscountCardDto;
+import ru.clevertec.check.model.dto.create.DiscountCardCreateDto;
+import ru.clevertec.check.model.dto.update.DiscountCardUpdateDto;
 
 public interface DiscountCardService {
 
-    DiscountCard findById(Long id, String url, String username, String password);
+    DiscountCardDto findById(Long id);
 
-    DiscountCard findByNumber(Integer number, String url, String username, String password);
+    DiscountCardDto findByNumber(Integer number);
+
+    DiscountCardDto create(DiscountCardCreateDto dto);
+
+    DiscountCardDto update(Long id, DiscountCardUpdateDto dto);
+
+    void delete(Long id);
 }

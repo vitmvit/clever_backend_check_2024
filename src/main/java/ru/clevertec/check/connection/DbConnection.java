@@ -13,15 +13,11 @@ public class DbConnection {
 
     /**
      * Создает соединение с базой данных.
-     *
-     * @param url      URL базы данных.
-     * @param username Имя пользователя базы данных.
-     * @param password Пароль базы данных.
      */
-    public void createConnection(String url, String username, String password) {
+    public void createConnection() {
         if (ConnectionSingleton.getInstance().getConnection().isEmpty()) {
             DatabaseConfig configReader = new DatabaseConfig();
-            Map<String, String> configMap = configReader.createConfigMap(url, username, password);
+            Map<String, String> configMap = configReader.createConfigMap();
             Connection connection = new DatabaseConnector().connection(
                     configMap.get("driver"),
                     configMap.get("url"),
@@ -35,14 +31,11 @@ public class DbConnection {
     /**
      * Возвращает соединение с базой данных.
      *
-     * @param url      URL базы данных.
-     * @param username Имя пользователя базы данных.
-     * @param password Пароль базы данных.
      * @return Соединение с базой данных.
      */
-    public Optional<Connection> getConnection(String url, String username, String password) {
+    public Optional<Connection> getConnection() {
         if (ConnectionSingleton.getInstance().getConnection().isEmpty()) {
-            createConnection(url, username, password);
+            createConnection();
         }
         return ConnectionSingleton.getInstance().getConnection();
     }

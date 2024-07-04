@@ -1,9 +1,7 @@
-package ru.clevertec.check.model;
+package ru.clevertec.check.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.*;
 import lombok.experimental.FieldNameConstants;
 
 import java.math.BigDecimal;
@@ -17,7 +15,9 @@ import java.util.List;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldNameConstants
+@JsonPropertyOrder({"name", "age"})
 public class Check {
 
     private LocalDateTime date;

@@ -1,56 +1,76 @@
 package ru.clevertec.check.service.impl;
 
-import ru.clevertec.check.model.DiscountCard;
+import ru.clevertec.check.converter.DiscountCardConverter;
+import ru.clevertec.check.converter.DiscountCardConverterImpl;
+import ru.clevertec.check.exception.NotFoundException;
+import ru.clevertec.check.model.dto.DiscountCardDto;
+import ru.clevertec.check.model.dto.create.DiscountCardCreateDto;
+import ru.clevertec.check.model.dto.update.DiscountCardUpdateDto;
 import ru.clevertec.check.repository.DiscountCardRepository;
 import ru.clevertec.check.repository.impl.DiscountCardRepositoryImpl;
 import ru.clevertec.check.service.DiscountCardService;
-import ru.clevertec.check.writer.Writer;
-import ru.clevertec.check.writer.impl.WriterImpl;
-
-import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
 
 /**
  * Реализация сервиса дисконтных карт.
  */
 public class DiscountCardServiceImpl implements DiscountCardService {
 
-    private final Writer writer = new WriterImpl();
-    private final DiscountCardRepository productRepository = new DiscountCardRepositoryImpl();
+    private final DiscountCardRepository discountCardRepository = new DiscountCardRepositoryImpl();
+    private final DiscountCardConverter discountCardConverter = new DiscountCardConverterImpl();
 
     /**
-     * Найти карточку скидки по номеру
+     * Находит дисконтную карту по её идентификатору.
      *
-     * @param id       номер карты
-     * @param url      адрес БД
-     * @param username имя пользователя для подключения к БД
-     * @param password пароль для подключения к БД
-     * @return объект карточки скидки
+     * @param id Идентификатор дисконтной карты.
+     * @return DTO дисконтной карты.
      */
     @Override
-    public DiscountCard findById(Long id, String url, String username, String password) {
-        try {
-            return productRepository.findById(id, url, username, password);
-        } catch (Exception e) {
-            writer.writeError(new RuntimeException(BAD_REQUEST));
-            throw new RuntimeException(BAD_REQUEST);
-        }
+    public DiscountCardDto findById(Long id) {
+        return discountCardConverter.convert(discountCardRepository.findById(id).orElseThrow(NotFoundException::new));
     }
 
     /**
-     * Найти карточку скидки по номеру
+     * Находит дисконтную карту по её номеру.
      *
-     * @param number   номер карты
-     * @param url      адрес БД
-     * @param username имя пользователя для подключения к БД
-     * @param password пароль для подключения к БД
-     * @return объект карточки скидки
+     * @param number Номер дисконтной карты.
+     * @return DTO дисконтной карты.
      */
-    public DiscountCard findByNumber(Integer number, String url, String username, String password) {
-        try {
-            return productRepository.findByNumber(number, url, username, password);
-        } catch (Exception e) {
-            writer.writeError(new RuntimeException(BAD_REQUEST));
-            throw new RuntimeException(BAD_REQUEST);
-        }
+    @Override
+    public DiscountCardDto findByNumber(Integer number) {
+        return discountCardConverter.convert(discountCardRepository.findByNumber(number).orElseThrow(NotFoundException::new));
+    }
+
+    /**
+     * Создает новую дисконтную карту.
+     *
+     * @param dto DTO дисконтной карты.
+     * @return DTO созданной дисконтной карты.
+     */
+    @Override
+    public DiscountCardDto create(DiscountCardCreateDto dto) {
+        return discountCardConverter.convert(discountCardRepository.create(discountCardConverter.convert(dto)));
+    }
+
+    /**
+     * Обновляет дисконтную карту.
+     *
+     * @param id  id одновляемой карты.
+     * @param dto DTO дисконтной карты.
+     * @return DTO обновленной дисконтной карты.
+     */
+    @Override
+    public DiscountCardDto update(Long id, DiscountCardUpdateDto dto) {
+        var discountCard = discountCardRepository.findById(id).orElseThrow(NotFoundException::new);
+        return discountCardConverter.convert(discountCardConverter.merge(discountCard, dto));
+    }
+
+    /**
+     * Удаляет дисконтную карту.
+     *
+     * @param id Идентификатор дисконтной карты.
+     */
+    @Override
+    public void delete(Long id) {
+        discountCardRepository.delete(id);
     }
 }

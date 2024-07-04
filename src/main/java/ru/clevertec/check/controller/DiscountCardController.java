@@ -5,27 +5,26 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.clevertec.check.model.dto.create.ProductCreateDto;
-import ru.clevertec.check.model.dto.update.ProductUpdateDto;
-import ru.clevertec.check.service.ProductService;
-import ru.clevertec.check.service.impl.ProductServiceImpl;
+import ru.clevertec.check.model.dto.create.DiscountCardCreateDto;
+import ru.clevertec.check.model.dto.update.DiscountCardUpdateDto;
+import ru.clevertec.check.service.DiscountCardService;
+import ru.clevertec.check.service.impl.DiscountCardServiceImpl;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
 @WebServlet
-public class ProductController extends HttpServlet {
+public class DiscountCardController extends HttpServlet {
 
-    private final ProductService productService = new ProductServiceImpl();
-
+    private final DiscountCardService discountCardService = new DiscountCardServiceImpl();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             String id = request.getParameter("id");
-            var productDto = productService.findById(Long.valueOf(id));
-            String json = objectMapper.writeValueAsString(productDto);
+            var discountCardDto = discountCardService.findById(Long.valueOf(id));
+            String json = objectMapper.writeValueAsString(discountCardDto);
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -44,9 +43,9 @@ public class ProductController extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 jb.append(line);
             }
-            var productCreateDto = objectMapper.readValue(jb.toString(), ProductCreateDto.class);
-            var productDto = productService.create(productCreateDto);
-            String json = objectMapper.writeValueAsString(productDto);
+            var discountCardCreateDto = objectMapper.readValue(jb.toString(), DiscountCardCreateDto.class);
+            var discountCardDto = discountCardService.create(discountCardCreateDto);
+            String json = objectMapper.writeValueAsString(discountCardDto);
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");
             out.print(json);
@@ -65,9 +64,9 @@ public class ProductController extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 jb.append(line);
             }
-            var productUpdateDto = objectMapper.readValue(jb.toString(), ProductUpdateDto.class);
-            var productDto = productService.update(Long.parseLong(id), productUpdateDto);
-            String json = objectMapper.writeValueAsString(productDto);
+            var discountCardUpdateDto = objectMapper.readValue(jb.toString(), DiscountCardUpdateDto.class);
+            var discountCardDto = discountCardService.update(Long.parseLong(id), discountCardUpdateDto);
+            String json = objectMapper.writeValueAsString(discountCardDto);
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");
             out.print(json);
@@ -79,7 +78,7 @@ public class ProductController extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         try {
             String id = request.getParameter("id");
-            productService.delete(Long.valueOf(id));
+            discountCardService.delete(Long.valueOf(id));
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);

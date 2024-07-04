@@ -1,37 +1,65 @@
 package ru.clevertec.check.service.impl;
 
-import ru.clevertec.check.model.Product;
+import ru.clevertec.check.converter.ProductConverter;
+import ru.clevertec.check.converter.ProductConverterImpl;
+import ru.clevertec.check.exception.NotFoundException;
+import ru.clevertec.check.model.dto.ProductDto;
+import ru.clevertec.check.model.dto.create.ProductCreateDto;
+import ru.clevertec.check.model.dto.update.ProductUpdateDto;
 import ru.clevertec.check.repository.ProductRepository;
 import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
 import ru.clevertec.check.service.ProductService;
-import ru.clevertec.check.writer.Writer;
-import ru.clevertec.check.writer.impl.WriterImpl;
-
-import static ru.clevertec.check.constant.Constant.BAD_REQUEST;
 
 /**
  * Реализация сервиса продуктов.
  */
 public class ProductServiceImpl implements ProductService {
 
-    private final Writer writer = new WriterImpl();
     private final ProductRepository productRepository = new ProductRepositoryImpl();
+    private final ProductConverter productConverter = new ProductConverterImpl();
 
     /**
-     * Найти продукт по идентификатору
+     * Находит продукт по его идентификатору.
      *
-     * @param id       идентификатор продукта
-     * @param url      адрес БД
-     * @param username имя пользователя для подключения к БД
-     * @param password пароль для подключения к БД
-     * @return объект продукта
+     * @param id Идентификатор продукта.
+     * @return DTO продукта.
      */
-    public Product findById(Long id, String url, String username, String password) {
-        try {
-            return productRepository.findById(id, url, username, password);
-        } catch (Exception e) {
-            writer.writeError(new RuntimeException(BAD_REQUEST));
-            throw new RuntimeException(BAD_REQUEST);
-        }
+    @Override
+    public ProductDto findById(Long id) {
+        return productConverter.convert(productRepository.findById(id).orElseThrow(NotFoundException::new));
+    }
+
+    /**
+     * Создает новый продукт.
+     *
+     * @param dto DTO продукта.
+     * @return DTO созданного продукта.
+     */
+    @Override
+    public ProductDto create(ProductCreateDto dto) {
+        return productConverter.convert(productRepository.create(productConverter.convert(dto)));
+    }
+
+    /**
+     * Обновляет продукт.
+     *
+     * @param id  обновляемого продукта.
+     * @param dto DTO продукта.
+     * @return DTO обновленного продукта.
+     */
+    @Override
+    public ProductDto update(Long id, ProductUpdateDto dto) {
+        var product = productRepository.findById(id).orElseThrow(NotFoundException::new);
+        return productConverter.convert(productConverter.merge(product, dto));
+    }
+
+    /**
+     * Удаляет продукт.
+     *
+     * @param id Идентификатор продукта.
+     */
+    @Override
+    public void delete(Long id) {
+        productRepository.delete(id);
     }
 }
