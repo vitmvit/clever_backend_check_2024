@@ -1,5 +1,6 @@
 package ru.clevertec.check.reader.impl;
 
+import ru.clevertec.check.exception.ReaderException;
 import ru.clevertec.check.model.DiscountCard;
 import ru.clevertec.check.reader.DiscountCardReader;
 import ru.clevertec.check.writer.Writer;
@@ -38,8 +39,8 @@ public class DiscountCardReaderImpl implements DiscountCardReader {
             file.close();
             return discountCardList;
         } catch (Exception e) {
-            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            writer.writeError(new ReaderException(INTERNAL_SERVER_ERROR));
+            throw new ReaderException(INTERNAL_SERVER_ERROR);
         }
     }
 }

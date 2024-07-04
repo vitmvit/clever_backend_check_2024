@@ -1,5 +1,6 @@
 package ru.clevertec.check.parser.impl;
 
+import ru.clevertec.check.exception.ParseException;
 import ru.clevertec.check.model.Check;
 import ru.clevertec.check.model.DiscountCard;
 import ru.clevertec.check.model.Product;
@@ -43,8 +44,8 @@ public class ArgsParserImpl implements ArgsParser {
      */
     public Check getCheck(String[] args) {
         if (args.length == 0) {
-            writer.writeError(new RuntimeException(BAD_REQUEST));
-            throw new RuntimeException(BAD_REQUEST);
+            writer.writeError(new ParseException(BAD_REQUEST));
+            throw new ParseException(BAD_REQUEST);
         }
         var inputString = arrayToString(args);
         // Проверить валидность входной строки
@@ -54,16 +55,16 @@ public class ArgsParserImpl implements ArgsParser {
             var saveToFile = getSaveToFile(inputString);
             if (pathToFile != null || saveToFile != null) {
                 if (pathToFile == null) {
-                    writer.writeError(new RuntimeException(BAD_REQUEST), saveToFile);
-                    throw new RuntimeException(BAD_REQUEST);
+                    writer.writeError(new ParseException(BAD_REQUEST), saveToFile);
+                    throw new ParseException(BAD_REQUEST);
                 }
                 if (saveToFile == null) {
-                    writer.writeError(new RuntimeException(BAD_REQUEST));
-                    throw new RuntimeException(BAD_REQUEST);
+                    writer.writeError(new ParseException(BAD_REQUEST));
+                    throw new ParseException(BAD_REQUEST);
                 }
             } else {
-                writer.writeError(new RuntimeException(BAD_REQUEST));
-                throw new RuntimeException(BAD_REQUEST);
+                writer.writeError(new ParseException(BAD_REQUEST));
+                throw new ParseException(BAD_REQUEST);
             }
             var productCountList = extractProductCount(inputString, pathToFile);
 
@@ -85,12 +86,12 @@ public class ArgsParserImpl implements ArgsParser {
                 checkService.showCheck(check);
                 return check;
             } else {
-                writer.writeError(new RuntimeException(NOT_ENOUGH_MONEY));
-                throw new RuntimeException(NOT_ENOUGH_MONEY);
+                writer.writeError(new ParseException(NOT_ENOUGH_MONEY));
+                throw new ParseException(NOT_ENOUGH_MONEY);
             }
         } else {
-            writer.writeError(new RuntimeException(BAD_REQUEST));
-            throw new RuntimeException(BAD_REQUEST);
+            writer.writeError(new ParseException(BAD_REQUEST));
+            throw new ParseException(BAD_REQUEST);
         }
     }
 
@@ -158,8 +159,8 @@ public class ArgsParserImpl implements ArgsParser {
         if (matcher.find()) {
             return new BigDecimal(matcher.group(1));
         } else {
-            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            writer.writeError(new ParseException(INTERNAL_SERVER_ERROR));
+            throw new ParseException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -175,8 +176,8 @@ public class ArgsParserImpl implements ArgsParser {
         if (matcher.find()) {
             return matcher.group(1);
         } else {
-            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            writer.writeError(new ParseException(INTERNAL_SERVER_ERROR));
+            throw new ParseException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -291,8 +292,8 @@ public class ArgsParserImpl implements ArgsParser {
             // Если не хватает товара на складе
             var product = productService.findById(productId, pathToFile);
             if (product.getQuantityInStock() < count) {
-                writer.writeError(new RuntimeException(BAD_REQUEST));
-                throw new RuntimeException(BAD_REQUEST);
+                writer.writeError(new ParseException(BAD_REQUEST));
+                throw new ParseException(BAD_REQUEST);
             }
 
             // Расчет общей суммы по товару
@@ -329,8 +330,8 @@ public class ArgsParserImpl implements ArgsParser {
             str = str.substring(0, str.length() - 1);
             return str;
         } catch (Exception e) {
-            writer.writeError(new RuntimeException(INTERNAL_SERVER_ERROR));
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            writer.writeError(new ParseException(INTERNAL_SERVER_ERROR));
+            throw new ParseException(INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -1,5 +1,6 @@
 package ru.clevertec.check.writer.impl;
 
+import ru.clevertec.check.exception.WriterException;
 import ru.clevertec.check.model.Check;
 import ru.clevertec.check.writer.Writer;
 
@@ -55,7 +56,7 @@ public class WriterImpl implements Writer {
                     .append(String.valueOf(check.getTotalDiscount())).append(CURRENCY).append(";")
                     .append(String.valueOf(check.getTotalSumWithDiscount())).append(CURRENCY).append(";\n");
         } catch (IOException e) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            throw new WriterException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -67,15 +68,7 @@ public class WriterImpl implements Writer {
      */
     @Override
     public void writeError(Exception e, String saveToFile) {
-        try {
-            FileWriter writer = new FileWriter(saveToFile);
-            writer.append("ERROR;\n");
-            writer.append(e.getMessage()).append(";\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
-        }
+        printError(e, saveToFile);
     }
 
     /**
@@ -85,14 +78,23 @@ public class WriterImpl implements Writer {
      */
     @Override
     public void writeError(Exception e) {
+        printError(e, ERROR_CSV);
+    }
+
+    /**
+     * Запись сообщения об ошибке.
+     *
+     * @param e Исключение.
+     */
+    private void printError(Exception e, String path) {
         try {
-            FileWriter writer = new FileWriter(ERROR_CSV);
+            FileWriter writer = new FileWriter(path);
             writer.append("ERROR;\n");
             writer.append(e.getMessage()).append(";\n");
             writer.flush();
             writer.close();
         } catch (IOException ex) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            throw new WriterException(INTERNAL_SERVER_ERROR);
         }
     }
 }
