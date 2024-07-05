@@ -7,5 +7,4 @@ import java.io.File;
 public interface CheckService {
 
     File getCheck(CheckCreateDto dto);
-
 }

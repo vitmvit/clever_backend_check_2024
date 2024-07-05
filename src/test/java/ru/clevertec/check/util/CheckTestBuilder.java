@@ -2,7 +2,6 @@ package ru.clevertec.check.util;
 
 import lombok.Builder;
 import ru.clevertec.check.model.dto.create.CheckCreateDto;
-import ru.clevertec.check.model.entity.Check;
 import ru.clevertec.check.model.entity.DiscountCard;
 import ru.clevertec.check.model.entity.Product;
 import ru.clevertec.check.model.entity.ProductData;
@@ -34,10 +33,6 @@ public class CheckTestBuilder {
 
     @Builder.Default
     private BigDecimal totalSumWithDiscount = new BigDecimal("1.07");
-
-    public Check buildCheck() {
-        return new Check(date, productDataList, discountCard, totalSum, totalDiscount, totalSumWithDiscount);
-    }
 
     public CheckCreateDto buildCheckCreateDto() {
         var dto = new CheckCreateDto();
