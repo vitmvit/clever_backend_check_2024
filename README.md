@@ -8,6 +8,4 @@
 
 ### [Задача 3 ветка: feature/entry-database](https://github.com/vitmvit/clever_backend_check_2024/tree/feature/entry-database)
 
-### Задача 4 ветка: feature/entry-rest
-
-### Задача 5 ветка: feature/custom
+### [Задача 4 ветка: feature/entry-rest](https://github.com/vitmvit/clever_backend_check_2024/tree/feature/entry-rest)
