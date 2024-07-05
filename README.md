@@ -2,6 +2,12 @@
 
 ## Задача 4
 
+### Запуск
+
+- Для запуска необходим Tomcat 10.1.25;
+- Создать артефакт (Output directory .../build/libs/clevertec-check-1.0.war);
+- Указать артефакт в разделе deployment.
+
 ### Реализация
 
 Реализовано RESTFUL - API (Servlet).
