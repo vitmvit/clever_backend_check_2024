@@ -1,34 +1,47 @@
 //package ru.clevertec.check.service;
 //
 //import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.TestInstance;
-//import ru.clevertec.check.model.entity.DiscountCard;
+//import org.junit.jupiter.api.extension.ExtendWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.junit.jupiter.MockitoExtension;
+//import ru.clevertec.check.converter.DiscountCardConverter;
+//import ru.clevertec.check.model.dto.ProductDto;
+//import ru.clevertec.check.model.entity.Product;
+//import ru.clevertec.check.repository.DiscountCardRepository;
 //import ru.clevertec.check.service.impl.DiscountCardServiceImpl;
-//import ru.clevertec.check.util.DiscountCardTestBuilder;
+//import ru.clevertec.check.util.ProductTestBuilder;
 //
-//import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertThrows;
+//import java.util.Optional;
+//import java.util.stream.Stream;
 //
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@ExtendWith(MockitoExtension.class)
 //public class DiscountCardServiceTest {
 //
+//    @Mock
+//    private DiscountCardRepository discountCardRepository;
+//
+//    @Mock
+//    private DiscountCardConverter discountCardConverter;
+//
+//    @InjectMocks
 //    private final DiscountCardService discountCardService = new DiscountCardServiceImpl();
 //
 //    @Test
-//    public void findByNumberShouldReturnExpectedDiscountCard() {
-//        var expected = DiscountCardTestBuilder.builder().build().buildDiscountCard();
-//        var actual = discountCardService.findByNumber(1111);
-//
-//        assertThat(actual)
-//                .hasFieldOrPropertyWithValue(DiscountCard.Fields.id, expected.getId())
-//                .hasFieldOrPropertyWithValue(DiscountCard.Fields.number, expected.getNumber())
-//                .hasFieldOrPropertyWithValue(DiscountCard.Fields.amount, expected.getAmount());
+//    public void findByIdShouldReturnExpectedDiscountCard() {
+//        Product expected = ProductTestBuilder.builder().build().buildProduct();
+//        ProductDto infoProductDto = ProductTestBuilder.builder().build().buildProductDto();
+//        Long id = expected.getId();
+//        // when
+//        when(productRepository.findById(id)).thenReturn(Optional.of(expected));
+//        when(productMapper.toInfoProductDto(expected)).thenReturn(infoProductDto);
+//        InfoProductDto actual = productService.get(id);
+//        // then
+//        assertEquals(expected.getUuid(), actual.id());
+//        assertEquals(expected.getName(), actual.name());
+//        assertEquals(expected.getDescription(), actual.description());
+//        assertEquals(expected.getPrice(), actual.price());
 //    }
 //
-//    @Test
-//    public void findByNumberShouldThrowRuntimeExceptionWhenDiscountCardNotFound() {
-//        var exception = assertThrows(Exception.class, () -> discountCardService.findByNumber(1112));
-//        assertEquals(exception.getClass(), RuntimeException.class);
-//    }
+//
 //}
