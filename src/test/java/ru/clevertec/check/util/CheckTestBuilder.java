@@ -1,6 +1,7 @@
 package ru.clevertec.check.util;
 
 import lombok.Builder;
+import ru.clevertec.check.model.dto.create.CheckCreateDto;
 import ru.clevertec.check.model.entity.Check;
 import ru.clevertec.check.model.entity.DiscountCard;
 import ru.clevertec.check.model.entity.Product;
@@ -36,5 +37,12 @@ public class CheckTestBuilder {
 
     public Check buildCheck() {
         return new Check(date, productDataList, discountCard, totalSum, totalDiscount, totalSumWithDiscount);
+    }
+
+    public CheckCreateDto buildCheckCreateDto() {
+        var dto = new CheckCreateDto();
+        dto.setDiscountCard(1111);
+        dto.setBalanceDebitCard(BigDecimal.valueOf(1000));
+        return dto;
     }
 }

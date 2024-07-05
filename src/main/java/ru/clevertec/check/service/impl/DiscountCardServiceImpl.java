@@ -30,17 +30,6 @@ public class DiscountCardServiceImpl implements DiscountCardService {
     }
 
     /**
-     * Находит дисконтную карту по её номеру.
-     *
-     * @param number Номер дисконтной карты.
-     * @return DTO дисконтной карты.
-     */
-    @Override
-    public DiscountCardDto findByNumber(Integer number) {
-        return discountCardConverter.convert(discountCardRepository.findByNumber(number).orElseThrow(NotFoundException::new));
-    }
-
-    /**
      * Создает новую дисконтную карту.
      *
      * @param dto DTO дисконтной карты.

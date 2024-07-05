@@ -9,6 +9,7 @@ import ru.clevertec.check.repository.ProductRepository;
 import ru.clevertec.check.repository.impl.DiscountCardRepositoryImpl;
 import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
 import ru.clevertec.check.service.CheckService;
+import ru.clevertec.check.util.ValidationUtils;
 import ru.clevertec.check.writer.Writer;
 import ru.clevertec.check.writer.impl.WriterImpl;
 
@@ -17,6 +18,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static ru.clevertec.check.constant.Constant.*;
@@ -29,6 +32,7 @@ public class CheckServiceImpl implements CheckService {
     private final ProductRepository productRepository = new ProductRepositoryImpl();
     private final DiscountCardRepository discountCardRepository = new DiscountCardRepositoryImpl();
     private final Writer writer = new WriterImpl();
+    private final Logger log = Logger.getLogger(CheckServiceImpl.class.getName());
 
     /**
      * Генерирует чек.
@@ -40,6 +44,16 @@ public class CheckServiceImpl implements CheckService {
     @Override
     public File getCheck(CheckCreateDto dto) {
         try {
+            log.log(Level.INFO, "CheckServiceImpl: generate check");
+
+            // Валидация номера дисконтной карты
+            ValidationUtils.validateDiscountCardNumber(dto.getDiscountCard());
+
+            // Проверка налиция товаров
+            if (dto.getProducts().size() < 1) {
+                log.log(Level.SEVERE, "CheckServiceImpl: not found products");
+                throw new GenerateCheckException(BAD_REQUEST);
+            }
             // Объединение дубликатов товаров в списке
             dto.setProducts(combineDuplicate(dto.getProducts()));
 
@@ -81,10 +95,12 @@ public class CheckServiceImpl implements CheckService {
                 // Запись чека
                 return writer.writeCheck(new Check(LocalDateTime.now(), productDataList, discountCard.orElse(null), totalSum, totalDiscount, totalSumWithDiscount));
             } else {
+                log.log(Level.SEVERE, "CheckServiceImpl: not enough money");
                 // Выброс исключения в случае недостатка средств
                 throw new GenerateCheckException(NOT_ENOUGH_MONEY);
             }
         } catch (Exception e) {
+            log.log(Level.SEVERE, "CheckServiceImpl: generate check error");
             // Выброс исключения в случае ошибки при генерации чека
             throw new GenerateCheckException(BAD_REQUEST);
         }
@@ -105,6 +121,7 @@ public class CheckServiceImpl implements CheckService {
             } else if (item.getCount() == product.getQuantityInStock()) {
                 productRepository.delete(product.getId());
             } else {
+                log.log(Level.SEVERE, "CheckServiceImpl: update data error");
                 throw new GenerateCheckException(BAD_REQUEST);
             }
         }

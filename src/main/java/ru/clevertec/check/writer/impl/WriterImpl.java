@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static ru.clevertec.check.constant.Constant.*;
 
@@ -16,6 +18,8 @@ import static ru.clevertec.check.constant.Constant.*;
  */
 public class WriterImpl implements Writer {
 
+    private final Logger log = Logger.getLogger(WriterImpl.class.getName());
+
     /**
      * Запись чека в файл.
      *
@@ -23,6 +27,7 @@ public class WriterImpl implements Writer {
      */
     public File writeCheck(Check check) {
         try {
+            log.log(Level.INFO, "WriterImpl: generate check");
             FileWriter writer = new FileWriter(CHECK_CSV);
 
             // Запись даты и времени операции
@@ -61,6 +66,7 @@ public class WriterImpl implements Writer {
             writer.close();
             return new File(CHECK_CSV);
         } catch (IOException e) {
+            log.log(Level.SEVERE, "WriterImpl: generate check error");
             throw new WriterException(INTERNAL_SERVER_ERROR);
         }
     }

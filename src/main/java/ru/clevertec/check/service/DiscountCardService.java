@@ -8,8 +8,6 @@ public interface DiscountCardService {
 
     DiscountCardDto findById(Long id);
 
-    DiscountCardDto findByNumber(Integer number);
-
     DiscountCardDto create(DiscountCardCreateDto dto);
 
     DiscountCardDto update(Long id, DiscountCardUpdateDto dto);

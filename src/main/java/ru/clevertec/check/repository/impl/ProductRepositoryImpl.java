@@ -8,6 +8,8 @@ import ru.clevertec.check.repository.ProductRepository;
 
 import java.sql.*;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
 
@@ -17,6 +19,8 @@ import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
 public class ProductRepositoryImpl implements ProductRepository {
 
     private final Optional<Connection> connection;
+
+    private final Logger log = Logger.getLogger(ProductRepositoryImpl.class.getName());
 
     public ProductRepositoryImpl() {
         this.connection = new DbConnection().getConnection();
@@ -46,9 +50,11 @@ public class ProductRepositoryImpl implements ProductRepository {
                     return Optional.of(result);
                 }
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "ProductRepositoryImpl: not found card by id");
                 return Optional.empty();
             }
         }
+        log.log(Level.SEVERE, "ProductRepositoryImpl: connection error");
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
@@ -75,9 +81,11 @@ public class ProductRepositoryImpl implements ProductRepository {
                     return findById(rs.getLong(1)).get();
                 }
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "ProductRepositoryImpl: create error");
                 throw new NotFoundException(INTERNAL_SERVER_ERROR);
             }
         }
+        log.log(Level.SEVERE, "ProductRepositoryImpl: connection error");
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
@@ -102,9 +110,11 @@ public class ProductRepositoryImpl implements ProductRepository {
                 ps.executeUpdate();
                 return findById(product.getId()).get();
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "ProductRepositoryImpl: update error");
                 throw new NotFoundException(INTERNAL_SERVER_ERROR);
             }
         }
+        log.log(Level.SEVERE, "ProductRepositoryImpl: connection error");
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
@@ -123,6 +133,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                 ps.setLong(1, id);
                 ps.executeUpdate();
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "ProductRepositoryImpl: delete error");
                 throw new NotFoundException(INTERNAL_SERVER_ERROR);
             }
         }

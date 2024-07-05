@@ -8,5 +8,4 @@ public interface CheckService {
 
     File getCheck(CheckCreateDto dto);
 
-//    void showCheck(Check check);
 }

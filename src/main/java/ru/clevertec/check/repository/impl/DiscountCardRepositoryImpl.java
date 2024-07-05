@@ -8,6 +8,8 @@ import ru.clevertec.check.repository.DiscountCardRepository;
 
 import java.sql.*;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
 
@@ -17,6 +19,8 @@ import static ru.clevertec.check.constant.Constant.INTERNAL_SERVER_ERROR;
 public class DiscountCardRepositoryImpl implements DiscountCardRepository {
 
     private final Optional<Connection> connection;
+
+    private final Logger log = Logger.getLogger(DiscountCardRepositoryImpl.class.getName());
 
     public DiscountCardRepositoryImpl() {
         this.connection = new DbConnection().getConnection();
@@ -44,9 +48,11 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
                     return Optional.of(result);
                 }
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "DiscountCardRepositoryImpl: not found card by id");
                 return Optional.empty();
             }
         }
+        log.log(Level.SEVERE, "DiscountCardRepositoryImpl: connection error");
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
@@ -72,9 +78,11 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
                     return Optional.of(result);
                 }
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "DiscountCardRepositoryImpl: not found card by number");
                 return Optional.empty();
             }
         }
+        log.log(Level.SEVERE, "DiscountCardRepositoryImpl: connection error");
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
@@ -99,9 +107,11 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
                     return findById(rs.getLong(1)).get();
                 }
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "DiscountCardRepositoryImpl: create error");
                 throw new NotFoundException(INTERNAL_SERVER_ERROR);
             }
         }
+        log.log(Level.SEVERE, "DiscountCardRepositoryImpl: connection error");
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
@@ -124,9 +134,11 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
                 ps.executeUpdate();
                 return findById(discountCard.getId()).get();
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "DiscountCardRepositoryImpl: update error");
                 throw new NotFoundException(INTERNAL_SERVER_ERROR);
             }
         }
+        log.log(Level.SEVERE, "DiscountCardRepositoryImpl: connection error");
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
@@ -145,6 +157,7 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
                 ps.setLong(1, id);
                 ps.executeUpdate();
             } catch (SQLException ex) {
+                log.log(Level.SEVERE, "DiscountCardRepositoryImpl: delete error");
                 throw new NotFoundException(INTERNAL_SERVER_ERROR);
             }
         }

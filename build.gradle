@@ -35,3 +35,8 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+tasks.named("build") {
+    dependsOn('jar')
+    dependsOn('war')
+}
