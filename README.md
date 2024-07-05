@@ -257,3 +257,103 @@ http://localhost:8080/discountcards?id=5
 ```http request
 500
 ```
+
+#### DiscountCardController
+
+##### 1. Печать чека (POST) с дисконтной картой
+
+Запрос:
+
+```http request
+http://localhost:8080/check
+```
+
+Тело запроса:
+
+```json
+{
+   "products": [
+      {
+         "id": 2,
+         "quantity": 15
+      },
+      {
+         "id": 1,
+         "quantity": 5
+      }
+   ],
+   "discountCard": 1111,
+   "balanceDebitCard": 10000
+}
+```
+
+Результат (содержимое файла):
+
+```
+DATE;TIME;
+04.07.2024;19:50:50
+
+QTY;DESCRIPTION;PRICE:DISCOUNT;TOTAL;
+5;Milk;1.07$;0.54$;5.35$;
+15;Cream 400g ;2.71$;4.07$;40.65$;
+
+DISCOUNT CARD;DISCOUNT PERCENTAGE;
+1111;3%;
+
+TOTAL PRICE;TOTAL DISCOUNT;TOTAL WITH DISCOUNT;
+46.00$;4.61$;41.39$;
+```
+
+Ошибка:
+
+```http request
+500
+```
+
+##### 2. Печать чека (POST) без дисконтной карты
+
+Запрос:
+
+```http request
+http://localhost:8080/check
+```
+
+Тело запроса:
+
+```json
+{
+   "products": [
+      {
+         "id": 9,
+         "quantity": 1
+      },
+      {
+         "id": 3,
+         "quantity": 1
+      }
+   ],
+   "balanceDebitCard": 10000
+}
+```
+
+Результат (содержимое файла):
+
+```
+DATE;TIME;
+05.07.2024;01:21:29
+
+QTY;DESCRIPTION;PRICE:DISCOUNT;TOTAL;
+1;Yogurt 400g ;2.10$;0$;2.10$;
+1;Packed bananas 1kg;1.10$;0$;1.10$;
+
+TOTAL PRICE;TOTAL DISCOUNT;TOTAL WITH DISCOUNT;
+3.20$;0$;3.20$;
+```
+
+Ошибка:
+
+```http request
+500
+```
+
+

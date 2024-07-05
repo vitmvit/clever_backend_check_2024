@@ -23,12 +23,11 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
     }
 
     /**
-     * Находит {@link DiscountCard} по его идентификатору.
+     * Ищет карту скидок по ее идентификатору.
      *
-     * @param id Идентификатор дисконтной карты.
-     * @return {@link DiscountCard}.
-     * @throws NotFoundException   если дисконтная карта с заданным идентификатором не найдена.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param id идентификатор карты скидки
+     * @return карта скидки, если она найдена, или пустой Optional, если она не найдена
+     * @throws ConnectionException если соединение с базой данных не установлено
      */
     @Override
     public Optional<DiscountCard> findById(Long id) {
@@ -45,19 +44,18 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
                     return Optional.of(result);
                 }
             } catch (SQLException ex) {
-                throw new NotFoundException(INTERNAL_SERVER_ERROR);
+                return Optional.empty();
             }
         }
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * Находит {@link DiscountCard} по номеру.
+     * Ищет карту скидок по ее номеру.
      *
-     * @param number Номер дисконтной карты.
-     * @return {@link DiscountCard}.
-     * @throws NotFoundException   если дисконтная карта с заданным номером не найдена.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param number номер карты скидки
+     * @return карта скидки, если она найдена, или пустой Optional, если она не найдена
+     * @throws ConnectionException если соединение с базой данных не установлено
      */
     @Override
     public Optional<DiscountCard> findByNumber(Integer number) {
@@ -74,19 +72,19 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
                     return Optional.of(result);
                 }
             } catch (SQLException ex) {
-                throw new NotFoundException(INTERNAL_SERVER_ERROR);
+                return Optional.empty();
             }
         }
         throw new ConnectionException(INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * Создает новый {@link DiscountCard}.
+     * Создает новую карту скидки.
      *
-     * @param discountCard {@link DiscountCard}.
-     * @return Созданный {@link DiscountCard}.
-     * @throws NotFoundException   если дисконтная карта не была создана.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param discountCard карта скидки
+     * @return созданная карта скидки
+     * @throws ConnectionException если соединение с базой данных не установлено
+     * @throws NotFoundException   если карта скидки не найдена после создания
      */
     @Override
     public DiscountCard create(DiscountCard discountCard) {
@@ -108,12 +106,12 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
     }
 
     /**
-     * Обновляет {@link DiscountCard}.
+     * Обновляет существующую карту скидки.
      *
-     * @param discountCard {@link DiscountCard}.
-     * @return Обновленный {@link DiscountCard}.
-     * @throws NotFoundException   если дисконтная карта не была обновлена.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param discountCard карта скидки
+     * @return обновленная карта скидки
+     * @throws ConnectionException если соединение с базой данных не установлено
+     * @throws NotFoundException   если карта скидки не найдена после обновления
      */
     @Override
     public DiscountCard update(DiscountCard discountCard) {
@@ -133,11 +131,11 @@ public class DiscountCardRepositoryImpl implements DiscountCardRepository {
     }
 
     /**
-     * Удаляет {@link DiscountCard}.
+     * Удаляет карту скидки по ее идентификатору.
      *
-     * @param id Идентификатор дисконтной карты.
-     * @throws NotFoundException   если дисконтная карта с заданным идентификатором не была найдена.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param id идентификатор карты скидки
+     * @throws ConnectionException если соединение с базой данных не установлено
+     * @throws NotFoundException если карта скидки не найдена после удаления
      */
     @Override
     public void delete(Long id) {

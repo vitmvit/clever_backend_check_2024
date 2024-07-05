@@ -12,13 +12,11 @@ import ru.clevertec.check.service.CheckService;
 import ru.clevertec.check.writer.Writer;
 import ru.clevertec.check.writer.impl.WriterImpl;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static ru.clevertec.check.constant.Constant.*;
@@ -32,44 +30,83 @@ public class CheckServiceImpl implements CheckService {
     private final DiscountCardRepository discountCardRepository = new DiscountCardRepositoryImpl();
     private final Writer writer = new WriterImpl();
 
+    /**
+     * Генерирует чек.
+     *
+     * @param dto данные для создания чека
+     * @return файл с чеком
+     * @throws GenerateCheckException если произошла ошибка при генерации чека
+     */
     @Override
-    public Check getCheck(CheckCreateDto dto) {
+    public File getCheck(CheckCreateDto dto) {
         try {
+            // Объединение дубликатов товаров в списке
             dto.setProducts(combineDuplicate(dto.getProducts()));
+
             List<ProductData> productDataList = new ArrayList<>();
-            var discountCard = discountCardRepository.findByNumber(dto.getDiscountCard());
+            Optional<DiscountCard> discountCard = Optional.empty();
+
+            // Перебор товаров в чеке
             for (var item : dto.getProducts()) {
+                // Поиск товара по его идентификатору
                 var product = productRepository.findById(item.getId()).orElseThrow(NotFoundException::new);
+                // Расчет скидки для товара
                 var discount = BigDecimal.ZERO;
                 if (product.getWholesaleProduct() && item.getQuantity() >= COUNT_WHOLESALE_PRODUCT) {
+                    // Расчет скидки для товара, продаваемого оптом
                     discount = calculateDiscountByWholesaleProduct(product, item.getQuantity());
                 } else {
-                    if (discountCard.isPresent()) {
+                    // Расчет скидки для товара с учетом дисконтной карты
+                    if (dto.getDiscountCard() != null) {
+                        discountCard = discountCardRepository.findByNumber(dto.getDiscountCard());
                         discount = calculateDiscountByProductWithoutWholesale(product, item.getQuantity(), discountCard.get());
                     }
                 }
+
+                // Расчет общей суммы для товара
                 var totalSum = product.getPrice().multiply(new BigDecimal(item.getQuantity()));
                 productDataList.add(new ProductData(item.getQuantity(), product, discount, totalSum));
             }
+
+            // Расчет общей суммы покупки
             var totalSum = calculateTotalSum(productDataList);
+            // Расчет общей скидки по покупке
             var totalDiscount = calculateTotalDiscount(productDataList);
+            // Расчет общей суммы покупки с учетом скидки
             var totalSumWithDiscount = totalSum.subtract(totalDiscount);
+            // Проверка достаточности средств на дебетовой карте
             if (dto.getBalanceDebitCard().compareTo(totalSumWithDiscount) > 0) {
-                var check = new Check(LocalDateTime.now(), productDataList, discountCard.get(), totalSum, totalDiscount, totalSumWithDiscount);
-//                CsvMapper mapper = new CsvMapper();
-//                CsvSchema schema = mapper.schemaFor(Check.class)
-//                        .withColumnSeparator(';')
-//                        .withoutQuoteChar()
-//                        .withHeader();
-//                ObjectWriter writer = mapper.writer(schema);
-//                writer.writeValue(new FileWriter("test.csv", StandardCharsets.UTF_8), check);
-                writer.writeCheck(new Check(LocalDateTime.now(), productDataList, discountCard.get(), totalSum, totalDiscount, totalSumWithDiscount));
-                return check;
+                // Обновление количества товаров в наличии
+                updateProductCount(productDataList);
+                // Запись чека
+                return writer.writeCheck(new Check(LocalDateTime.now(), productDataList, discountCard.orElse(null), totalSum, totalDiscount, totalSumWithDiscount));
             } else {
+                // Выброс исключения в случае недостатка средств
                 throw new GenerateCheckException(NOT_ENOUGH_MONEY);
             }
         } catch (Exception e) {
+            // Выброс исключения в случае ошибки при генерации чека
             throw new GenerateCheckException(BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Обновляет количество товаров в наличии после покупки.
+     *
+     * @param productDataList список данных о товарах в чеке
+     * @throws GenerateCheckException если количество товара в наличии меньше, чем количество товара в чеке
+     */
+    private void updateProductCount(List<ProductData> productDataList) {
+        for (var item : productDataList) {
+            var product = productRepository.findById(item.getProduct().getId()).orElseThrow(NotFoundException::new);
+            if (item.getCount() < product.getQuantityInStock()) {
+                product.setQuantityInStock(product.getQuantityInStock() - item.getCount());
+                productRepository.update(product);
+            } else if (item.getCount() == product.getQuantityInStock()) {
+                productRepository.delete(product.getId());
+            } else {
+                throw new GenerateCheckException(BAD_REQUEST);
+            }
         }
     }
 
@@ -130,6 +167,12 @@ public class CheckServiceImpl implements CheckService {
                 .abs();
     }
 
+    /**
+     * Объединяет дубликаты товаров в списке.
+     *
+     * @param productList список товаров
+     * @return список товаров без дублей
+     */
     private List<CheckProduct> combineDuplicate(List<CheckProduct> productList) {
         Map<Integer, Integer> productQuantities = new HashMap<>();
         for (int i = 0; i < productList.size(); i++) {
@@ -142,7 +185,6 @@ public class CheckServiceImpl implements CheckService {
                 productQuantities.put(id, quantity);
             }
         }
-
         List<CheckProduct> newProductList = new ArrayList<>();
         for (Map.Entry<Integer, Integer> entry : productQuantities.entrySet()) {
             newProductList.add(new CheckProduct(Long.valueOf(entry.getKey()), entry.getValue()));

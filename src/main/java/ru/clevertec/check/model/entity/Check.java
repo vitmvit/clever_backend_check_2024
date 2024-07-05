@@ -1,6 +1,5 @@
 package ru.clevertec.check.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 
@@ -17,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
-@JsonPropertyOrder({"name", "age"})
 public class Check {
 
     private LocalDateTime date;

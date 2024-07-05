@@ -7,6 +7,7 @@ plugins {
 group 'ru.clevertec.check'
 version '1.0'
 archivesBaseName = 'clevertec-check'
+
 repositories {
     mavenCentral()
 }
@@ -17,7 +18,6 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.4.1.Final'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.1'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.1'
 
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.1.0'

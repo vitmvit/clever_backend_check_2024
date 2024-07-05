@@ -8,7 +8,7 @@ public class Constant {
     public static final String SOLUTION_CONFIG = "application.yml";
 
     // file path
-    public static final String CHECK_CSV = "result2.csv";
+    public static final String CHECK_CSV = "result.csv";
 
     // error
     public static final String INTERNAL_SERVER_ERROR = "INTERNAL SERVER ERROR";

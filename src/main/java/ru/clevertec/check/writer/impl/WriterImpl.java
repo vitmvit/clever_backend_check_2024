@@ -4,6 +4,7 @@ import ru.clevertec.check.exception.WriterException;
 import ru.clevertec.check.model.entity.Check;
 import ru.clevertec.check.writer.Writer;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +21,7 @@ public class WriterImpl implements Writer {
      *
      * @param check Чек.
      */
-    public void writeCheck(Check check) {
+    public File writeCheck(Check check) {
         try {
             FileWriter writer = new FileWriter(CHECK_CSV);
 
@@ -58,6 +59,7 @@ public class WriterImpl implements Writer {
                     .append(String.valueOf(check.getTotalSumWithDiscount())).append(CURRENCY).append(";\n");
             writer.flush();
             writer.close();
+            return new File(CHECK_CSV);
         } catch (IOException e) {
             throw new WriterException(INTERNAL_SERVER_ERROR);
         }

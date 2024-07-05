@@ -2,7 +2,9 @@ package ru.clevertec.check.writer;
 
 import ru.clevertec.check.model.entity.Check;
 
+import java.io.File;
+
 public interface Writer {
 
-    void writeCheck(Check check);
+    File writeCheck(Check check);
 }

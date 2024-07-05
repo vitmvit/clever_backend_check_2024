@@ -13,6 +13,11 @@ import ru.clevertec.check.service.impl.ProductServiceImpl;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
+/**
+ * Контроллер для работы с товарами.
+ * Обрабатывает GET, POST, PUT, DELETE-запросы для товаров.
+ * Возвращает данные в формате JSON.
+ */
 @WebServlet
 public class ProductController extends HttpServlet {
 
@@ -20,6 +25,12 @@ public class ProductController extends HttpServlet {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Возвращает товар по его идентификатору.
+     *
+     * @param request  объект запроса
+     * @param response объект ответа
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -36,6 +47,12 @@ public class ProductController extends HttpServlet {
         }
     }
 
+    /**
+     * Создает новый товар.
+     *
+     * @param request  объект запроса
+     * @param response объект ответа
+     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         try {
             StringBuffer jb = new StringBuffer();
@@ -55,6 +72,12 @@ public class ProductController extends HttpServlet {
         }
     }
 
+    /**
+     * Обновляет существующий товар.
+     *
+     * @param request  объект запроса
+     * @param response объект ответа
+     */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -76,6 +99,12 @@ public class ProductController extends HttpServlet {
         }
     }
 
+    /**
+     * Удаляет существующий товар.
+     *
+     * @param request  объект запроса
+     * @param response объект ответа
+     */
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         try {
             String id = request.getParameter("id");

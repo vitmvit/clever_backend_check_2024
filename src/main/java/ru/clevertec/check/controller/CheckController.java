@@ -11,8 +11,14 @@ import ru.clevertec.check.service.CheckService;
 import ru.clevertec.check.service.impl.CheckServiceImpl;
 
 import java.io.BufferedReader;
-import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+/**
+ * Контроллер для работы с чеками.
+ * Обрабатывает POST-запросы для создания чеков.
+ * Возвращает сгенерированный чек в формате CSV.
+ */
 @WebServlet
 public class CheckController extends HttpServlet {
 
@@ -20,6 +26,12 @@ public class CheckController extends HttpServlet {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Создает чек на основе переданных данных в теле запроса.
+     *
+     * @param request  объект запроса
+     * @param response объект ответа
+     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         try {
             StringBuffer jb = new StringBuffer();
@@ -30,11 +42,10 @@ public class CheckController extends HttpServlet {
             }
             objectMapper.registerModule(new JavaTimeModule());
             CheckCreateDto accountCreateDto = objectMapper.readValue(jb.toString(), CheckCreateDto.class);
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition", "attachment; filename=\"file.csv\"");
             var check = checkService.getCheck(accountCreateDto);
-            String json = objectMapper.writeValueAsString(check);
-            PrintWriter out = response.getWriter();
-            response.setContentType("application/json");
-            out.print(json);
+            Files.copy(Paths.get(check.getPath()), response.getOutputStream());
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }

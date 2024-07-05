@@ -23,12 +23,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     /**
-     * Находит {@link Product} по его идентификатору.
+     * Ищет товар по его идентификатору.
      *
-     * @param id Идентификатор продукта.
-     * @return {@link Product}.
-     * @throws NotFoundException   если продукт с заданным идентификатором не найден.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param id идентификатор товара
+     * @return товар, если он найден, или пустой Optional, если он не найден
+     * @throws ConnectionException если соединение с базой данных не установлено
      */
     @Override
     public Optional<Product> findById(Long id) {
@@ -54,12 +53,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     /**
-     * Создает новый {@link Product}.
+     * Создает новый товар.
      *
-     * @param product {@link Product}.
-     * @return Созданный {@link Product}.
-     * @throws NotFoundException   если продукт не был создан.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param product товар
+     * @return созданный товар
+     * @throws ConnectionException если соединение с базой данных не установлено
+     * @throws NotFoundException   если товар не найден после создания
      */
     @Override
     public Product create(Product product) {
@@ -83,12 +82,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     /**
-     * Обновляет {@link Product}.
+     * Обновляет существующий товар.
      *
-     * @param product {@link Product}.
-     * @return Обновленный {@link Product}.
-     * @throws NotFoundException   если продукт не был обновлен.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param product товар
+     * @return обновленный товар
+     * @throws ConnectionException если соединение с базой данных не установлено
+     * @throws NotFoundException   если товар не найден после обновления
      */
     @Override
     public Product update(Product product) {
@@ -110,11 +109,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     /**
-     * Удаляет {@link Product}.
+     * Удаляет товар по его идентификатору.
      *
-     * @param id Идентификатор продукта.
-     * @throws NotFoundException   если продукт с заданным идентификатором не был найден.
-     * @throws ConnectionException если произошла ошибка при подключении к базе данных.
+     * @param id идентификатор товара
+     * @throws ConnectionException если соединение с базой данных не установлено
+     * @throws NotFoundException если товар не найден после удаления
      */
     @Override
     public void delete(Long id) {

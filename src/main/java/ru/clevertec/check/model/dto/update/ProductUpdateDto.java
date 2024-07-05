@@ -5,9 +5,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-/**
- * Модель обновления товара.
- */
 @Getter
 @Setter
 public class ProductUpdateDto {
