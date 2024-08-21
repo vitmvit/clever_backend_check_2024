@@ -18,6 +18,10 @@ public class DiscountCardTestBuilder {
     @Builder.Default
     private Short amount = 3;
 
+    public Long buildId() {
+        return id;
+    }
+
     public DiscountCard buildDiscountCard() {
         return new DiscountCard(id, number, amount);
     }

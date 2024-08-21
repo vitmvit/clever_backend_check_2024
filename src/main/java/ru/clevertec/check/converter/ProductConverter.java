@@ -39,18 +39,6 @@ public interface ProductConverter {
     Product convert(ProductCreateDto source);
 
     /**
-     * Преобразует объект {@link ProductCreateDto} в {@link Product}.
-     *
-     * @param source исходный объект
-     * @return преобразованный объект
-     */
-    @Mappings({
-            @Mapping(target = "quantityInStock", source = "quantity"),
-            @Mapping(target = "wholesaleProduct", source = "isWholesale")
-    })
-    Product convert(ProductUpdateDto source);
-
-    /**
      * Сливает данные из {@link ProductUpdateDto} в объект {@link Product}.
      *
      * @param source объект для слияния

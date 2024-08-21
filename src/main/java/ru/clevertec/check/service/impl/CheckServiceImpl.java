@@ -1,13 +1,12 @@
 package ru.clevertec.check.service.impl;
 
+import lombok.AllArgsConstructor;
 import ru.clevertec.check.exception.GenerateCheckException;
 import ru.clevertec.check.exception.NotFoundException;
 import ru.clevertec.check.model.dto.create.CheckCreateDto;
 import ru.clevertec.check.model.entity.*;
 import ru.clevertec.check.repository.DiscountCardRepository;
 import ru.clevertec.check.repository.ProductRepository;
-import ru.clevertec.check.repository.impl.DiscountCardRepositoryImpl;
-import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
 import ru.clevertec.check.service.CheckService;
 import ru.clevertec.check.util.ValidationUtils;
 import ru.clevertec.check.writer.Writer;
@@ -27,10 +26,11 @@ import static ru.clevertec.check.constant.Constant.*;
 /**
  * Реализация сервиса вывода чеков в консоль.
  */
+@AllArgsConstructor
 public class CheckServiceImpl implements CheckService {
 
-    private final ProductRepository productRepository = new ProductRepositoryImpl();
-    private final DiscountCardRepository discountCardRepository = new DiscountCardRepositoryImpl();
+    private final ProductRepository productRepository;
+    private final DiscountCardRepository discountCardRepository;
     private final Writer writer = new WriterImpl();
     private final Logger log = Logger.getLogger(CheckServiceImpl.class.getName());
 
@@ -49,7 +49,7 @@ public class CheckServiceImpl implements CheckService {
             // Валидация номера дисконтной карты
             ValidationUtils.validateDiscountCardNumber(dto.getDiscountCard());
 
-            // Проверка налиция товаров
+            // Проверка наличия товаров
             if (dto.getProducts().size() < 1) {
                 log.log(Level.SEVERE, "CheckServiceImpl: not found products");
                 throw new GenerateCheckException(BAD_REQUEST);

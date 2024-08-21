@@ -34,7 +34,7 @@ public interface DiscountCardConverter {
      */
     @Mappings({
             @Mapping(target = "number", source = "discountCard"),
-            @Mapping(target = "amount", source = "discountCard")
+            @Mapping(target = "amount", source = "discountAmount")
     })
     DiscountCard convert(DiscountCardCreateDto source);
 

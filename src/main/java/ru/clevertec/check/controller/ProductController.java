@@ -5,8 +5,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.clevertec.check.converter.ProductConverter;
+import ru.clevertec.check.converter.ProductConverterImpl;
 import ru.clevertec.check.model.dto.create.ProductCreateDto;
 import ru.clevertec.check.model.dto.update.ProductUpdateDto;
+import ru.clevertec.check.repository.ProductRepository;
+import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
 import ru.clevertec.check.service.ProductService;
 import ru.clevertec.check.service.impl.ProductServiceImpl;
 
@@ -21,8 +25,9 @@ import java.io.PrintWriter;
 @WebServlet
 public class ProductController extends HttpServlet {
 
-    private final ProductService productService = new ProductServiceImpl();
-
+    private final ProductRepository productRepository = new ProductRepositoryImpl();
+    private final ProductConverter productConverter = new ProductConverterImpl();
+    private final ProductService productService = new ProductServiceImpl(productRepository, productConverter);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**

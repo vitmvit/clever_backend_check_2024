@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class ProductTestBuilder {
 
     @Builder.Default
-    private Long id = 111L;
+    private Long id = 1L;
 
     @Builder.Default
     private String description = "Milk";
@@ -25,6 +25,10 @@ public class ProductTestBuilder {
 
     @Builder.Default
     private Boolean wholesaleProduct = true;
+
+    public Long buildId() {
+        return id;
+    }
 
     public Product buildProduct() {
         return new Product(id, description, price, quantityInStock, wholesaleProduct);

@@ -7,6 +7,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.clevertec.check.model.dto.create.CheckCreateDto;
+import ru.clevertec.check.repository.DiscountCardRepository;
+import ru.clevertec.check.repository.ProductRepository;
+import ru.clevertec.check.repository.impl.DiscountCardRepositoryImpl;
+import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
 import ru.clevertec.check.service.CheckService;
 import ru.clevertec.check.service.impl.CheckServiceImpl;
 
@@ -22,7 +26,9 @@ import java.nio.file.Paths;
 @WebServlet
 public class CheckController extends HttpServlet {
 
-    private final CheckService checkService = new CheckServiceImpl();
+    private final ProductRepository productRepository = new ProductRepositoryImpl();
+    private final DiscountCardRepository discountCardRepository = new DiscountCardRepositoryImpl();
+    private final CheckService checkService = new CheckServiceImpl(productRepository, discountCardRepository);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

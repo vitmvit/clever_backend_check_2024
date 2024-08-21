@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import ru.clevertec.check.exception.GenerateCheckException;
 import ru.clevertec.check.model.entity.CheckProduct;
+import ru.clevertec.check.repository.impl.DiscountCardRepositoryImpl;
+import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
 import ru.clevertec.check.service.impl.CheckServiceImpl;
 import ru.clevertec.check.util.CheckTestBuilder;
 
@@ -14,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CheckServiceTest {
 
-    private final CheckService checkService = new CheckServiceImpl();
+    private final CheckService checkService = new CheckServiceImpl(new ProductRepositoryImpl(), new DiscountCardRepositoryImpl());
 
     @Test
     public void getCheckShouldReturnFile() {
