@@ -1,12 +1,10 @@
 package ru.clevertec.check.writer;
 
-import ru.clevertec.check.model.Check;
+import ru.clevertec.check.model.entity.Check;
+
+import java.io.File;
 
 public interface Writer {
 
-    void writeCheck(Check check, String saveToFile);
-
-    void writeError(Exception e, String saveToFile);
-
-    void writeError(Exception e);
+    File writeCheck(Check check);
 }

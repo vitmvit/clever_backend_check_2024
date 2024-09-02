@@ -1,4 +1,4 @@
-package ru.clevertec.check.model;
+package ru.clevertec.check.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

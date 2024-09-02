@@ -1,8 +1,10 @@
 package ru.clevertec.check.service;
 
-import ru.clevertec.check.model.Check;
+import ru.clevertec.check.model.dto.create.CheckCreateDto;
+
+import java.io.File;
 
 public interface CheckService {
 
-    void showCheck(Check check);
+    File getCheck(CheckCreateDto dto);
 }

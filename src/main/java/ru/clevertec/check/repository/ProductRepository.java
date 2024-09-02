@@ -1,8 +1,16 @@
 package ru.clevertec.check.repository;
 
-import ru.clevertec.check.model.Product;
+import ru.clevertec.check.model.entity.Product;
+
+import java.util.Optional;
 
 public interface ProductRepository {
 
-    Product findById(Long id, String url, String username, String password);
+    Optional<Product> findById(Long id);
+
+    Product create(Product product);
+
+    Product update(Product product);
+
+    void delete(Long id);
 }

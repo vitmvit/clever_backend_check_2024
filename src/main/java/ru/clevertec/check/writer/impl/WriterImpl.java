@@ -1,11 +1,15 @@
 package ru.clevertec.check.writer.impl;
 
-import ru.clevertec.check.model.Check;
+import ru.clevertec.check.exception.WriterException;
+import ru.clevertec.check.model.entity.Check;
 import ru.clevertec.check.writer.Writer;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static ru.clevertec.check.constant.Constant.*;
 
@@ -14,14 +18,18 @@ import static ru.clevertec.check.constant.Constant.*;
  */
 public class WriterImpl implements Writer {
 
+    private final Logger log = Logger.getLogger(WriterImpl.class.getName());
+
     /**
      * Запись чека в файл.
      *
      * @param check Чек.
      */
-    @Override
-    public void writeCheck(Check check, String saveToFile) {
-        try (FileWriter writer = new FileWriter(saveToFile)) {
+    public File writeCheck(Check check) {
+        try {
+            log.log(Level.INFO, "WriterImpl: generate check");
+            FileWriter writer = new FileWriter(CHECK_CSV);
+
             // Запись даты и времени операции
             writer.append("DATE;TIME;\n");
             writer.append(check.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))).append(";");
@@ -54,45 +62,12 @@ public class WriterImpl implements Writer {
                     .append(String.valueOf(check.getTotalSum())).append(CURRENCY).append(";")
                     .append(String.valueOf(check.getTotalDiscount())).append(CURRENCY).append(";")
                     .append(String.valueOf(check.getTotalSumWithDiscount())).append(CURRENCY).append(";\n");
+            writer.flush();
+            writer.close();
+            return new File(CHECK_CSV);
         } catch (IOException e) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Запись сообщения об ошибке в файл.
-     *
-     * @param e          Исключение.
-     * @param saveToFile Путь к файлу, в который будет записано сообщение об ошибке.
-     */
-    @Override
-    public void writeError(Exception e, String saveToFile) {
-        try {
-            FileWriter writer = new FileWriter(saveToFile);
-            writer.append("ERROR;\n");
-            writer.append(e.getMessage()).append(";\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Запись сообщения об ошибке в файл result.csv.
-     *
-     * @param e Исключение.
-     */
-    @Override
-    public void writeError(Exception e) {
-        try {
-            FileWriter writer = new FileWriter(ERROR_CSV);
-            writer.append("ERROR;\n");
-            writer.append(e.getMessage()).append(";\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(INTERNAL_SERVER_ERROR);
+            log.log(Level.SEVERE, "WriterImpl: generate check error");
+            throw new WriterException(INTERNAL_SERVER_ERROR);
         }
     }
 }

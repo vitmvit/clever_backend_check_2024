@@ -1,7 +1,10 @@
 package ru.clevertec.check.util;
 
 import lombok.Builder;
-import ru.clevertec.check.model.Product;
+import ru.clevertec.check.model.dto.ProductDto;
+import ru.clevertec.check.model.dto.create.ProductCreateDto;
+import ru.clevertec.check.model.dto.update.ProductUpdateDto;
+import ru.clevertec.check.model.entity.Product;
 
 import java.math.BigDecimal;
 
@@ -23,7 +26,40 @@ public class ProductTestBuilder {
     @Builder.Default
     private Boolean wholesaleProduct = true;
 
+    public Long buildId() {
+        return id;
+    }
+
     public Product buildProduct() {
         return new Product(id, description, price, quantityInStock, wholesaleProduct);
+    }
+
+    public ProductDto buildProductDto() {
+        var product = new ProductDto();
+        product.setId(id);
+        product.setDescription(description);
+        product.setPrice(price);
+        product.setIsWholesale(wholesaleProduct);
+        product.setQuantity(quantityInStock);
+        return product;
+    }
+
+    public ProductUpdateDto buildProductUpdateDto() {
+        var product = new ProductUpdateDto();
+        product.setId(id);
+        product.setDescription(description);
+        product.setPrice(price);
+        product.setIsWholesale(wholesaleProduct);
+        product.setQuantity(quantityInStock);
+        return product;
+    }
+
+    public ProductCreateDto buildProductCreateDto() {
+        var product = new ProductCreateDto();
+        product.setDescription(description);
+        product.setPrice(price);
+        product.setIsWholesale(wholesaleProduct);
+        product.setQuantity(quantityInStock);
+        return product;
     }
 }

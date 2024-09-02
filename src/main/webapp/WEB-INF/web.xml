@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <servlet>
+        <servlet-name>ProductController</servlet-name>
+        <servlet-class>ru.clevertec.check.controller.ProductController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ProductController</servlet-name>
+        <url-pattern>/products/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DiscountCardController</servlet-name>
+        <servlet-class>ru.clevertec.check.controller.DiscountCardController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DiscountCardController</servlet-name>
+        <url-pattern>/discountcards/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CheckController</servlet-name>
+        <servlet-class>ru.clevertec.check.controller.CheckController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CheckController</servlet-name>
+        <url-pattern>/check/*</url-pattern>
+    </servlet-mapping>
+</web-app>

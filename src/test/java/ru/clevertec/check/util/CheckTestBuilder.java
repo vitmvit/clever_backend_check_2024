@@ -1,10 +1,10 @@
 package ru.clevertec.check.util;
 
 import lombok.Builder;
-import ru.clevertec.check.model.Check;
-import ru.clevertec.check.model.DiscountCard;
-import ru.clevertec.check.model.Product;
-import ru.clevertec.check.model.ProductData;
+import ru.clevertec.check.model.dto.create.CheckCreateDto;
+import ru.clevertec.check.model.entity.DiscountCard;
+import ru.clevertec.check.model.entity.Product;
+import ru.clevertec.check.model.entity.ProductData;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,7 +34,10 @@ public class CheckTestBuilder {
     @Builder.Default
     private BigDecimal totalSumWithDiscount = new BigDecimal("1.07");
 
-    public Check buildCheck() {
-        return new Check(date, productDataList, discountCard, totalSum, totalDiscount, totalSumWithDiscount);
+    public CheckCreateDto buildCheckCreateDto() {
+        var dto = new CheckCreateDto();
+        dto.setDiscountCard(1111);
+        dto.setBalanceDebitCard(BigDecimal.valueOf(1000));
+        return dto;
     }
 }

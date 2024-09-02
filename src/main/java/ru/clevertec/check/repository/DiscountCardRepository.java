@@ -1,8 +1,19 @@
 package ru.clevertec.check.repository;
 
-import ru.clevertec.check.model.DiscountCard;
+import ru.clevertec.check.model.entity.DiscountCard;
+
+import java.util.Optional;
 
 public interface DiscountCardRepository {
 
-    DiscountCard findByNumber(Integer number, String url, String username, String password);
+    Optional<DiscountCard> findById(Long id);
+
+    Optional<DiscountCard> findByNumber(Integer number);
+
+    DiscountCard create(DiscountCard discountCard);
+
+    DiscountCard update(DiscountCard discountCard);
+
+    void delete(Long id);
+
 }
