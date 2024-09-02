@@ -2,37 +2,59 @@ package ru.clevertec.check.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.clevertec.check.converter.DiscountCardConverterImpl;
 import ru.clevertec.check.exception.ConnectionException;
+import ru.clevertec.check.exception.NotFoundException;
+import ru.clevertec.check.model.entity.DiscountCard;
+import ru.clevertec.check.repository.impl.DiscountCardRepositoryImpl;
 import ru.clevertec.check.service.impl.DiscountCardServiceImpl;
 import ru.clevertec.check.util.DiscountCardTestBuilder;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DiscountCardServiceTest {
+class DiscountCardServiceTest {
 
     @Mock
+    private DiscountCardRepositoryImpl discountCardRepository;
+
+    @Mock
+    private DiscountCardConverterImpl discountCardConverter;
+
+    @InjectMocks
     private DiscountCardServiceImpl discountCardService;
+
+    @Captor
+    private ArgumentCaptor<DiscountCard> discountCardArgumentCaptor;
 
     @Test
     void findByIdShouldReturnExpectedDiscountCardWhenFound() {
-        var expected = DiscountCardTestBuilder.builder().build().buildDiscountCardDto();
-        var id = expected.getId();
+        var expectedDiscountCard = DiscountCardTestBuilder.builder().build().buildDiscountCard();
+        var expectedDiscountCardDto = DiscountCardTestBuilder.builder().build().buildDiscountCardDto();
+        var discountCardId = expectedDiscountCard.getId();
 
-        when(discountCardService.findById(id)).thenReturn(expected);
-        var actual = discountCardService.findById(id);
+        when(discountCardRepository.findById(discountCardId)).thenReturn(Optional.of(expectedDiscountCard));
+        when(discountCardConverter.convert(expectedDiscountCard)).thenReturn(expectedDiscountCardDto);
 
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getDiscountCard(), actual.getDiscountCard());
-        assertEquals(expected.getDiscountAmount(), actual.getDiscountAmount());
+        var actual = discountCardService.findById(discountCardId);
+
+        assertEquals(expectedDiscountCardDto.getId(), actual.getId());
+        assertEquals(expectedDiscountCardDto.getDiscountCard(), actual.getDiscountCard());
+        assertEquals(expectedDiscountCardDto.getDiscountAmount(), actual.getDiscountAmount());
     }
 
     @Test
     void findByIdShouldThrowConnectionExceptionWhenNotFound() {
-        doThrow(ConnectionException.class).when(discountCardService).findById(Long.MAX_VALUE);
+        doThrow(ConnectionException.class).when(discountCardRepository).findById(Long.MAX_VALUE);
 
         var exception = assertThrows(ConnectionException.class, () -> discountCardService.findById(Long.MAX_VALUE));
         assertEquals(exception.getClass(), ConnectionException.class);
@@ -40,35 +62,51 @@ public class DiscountCardServiceTest {
 
     @Test
     void createShouldReturnNewDiscountCard() {
-        var expected = DiscountCardTestBuilder.builder().build().buildDiscountCardDto();
-        var cardToCreate = DiscountCardTestBuilder.builder().withId(null).build().buildDiscountCardCreateDto();
+        var discountCardToSave = DiscountCardTestBuilder.builder().withId(null).build().buildDiscountCard();
+        var expectedDiscountCard = DiscountCardTestBuilder.builder().build().buildDiscountCard();
+        var discountCardCreateDto = DiscountCardTestBuilder.builder().withId(null).build().buildDiscountCardCreateDto();
 
-        when(discountCardService.create(cardToCreate)).thenReturn(expected);
-        var actual = discountCardService.create(cardToCreate);
+        doReturn(expectedDiscountCard).when(discountCardRepository).create(discountCardToSave);
+        when(discountCardConverter.convert(discountCardCreateDto)).thenReturn(discountCardToSave);
 
-        assertNotNull(actual.getId());
-        assertEquals(expected.getDiscountCard(), actual.getDiscountCard());
-        assertEquals(expected.getDiscountAmount(), actual.getDiscountAmount());
+        discountCardService.create(discountCardCreateDto);
+
+        verify(discountCardRepository).create(discountCardArgumentCaptor.capture());
+        assertThat(discountCardArgumentCaptor.getValue()).hasFieldOrPropertyWithValue(DiscountCard.Fields.id, null);
     }
 
     @Test
-    public void updateShouldUpdatedDiscountCard() {
-        var id = DiscountCardTestBuilder.builder().build().buildDiscountCard().getId();
-        var cardToUpdate = DiscountCardTestBuilder.builder().build().buildDiscountCardUpdateDto();
-        var expected = DiscountCardTestBuilder.builder().build().buildDiscountCardDto();
+    public void updateShouldCallsMergeAndSaveWhenDiscountCardFound() {
+        var discountCardId = DiscountCardTestBuilder.builder().build().buildId();
+        var discountCardUpdateDto = DiscountCardTestBuilder.builder().build().buildDiscountCardUpdateDto();
+        var existingDiscountCard = DiscountCardTestBuilder.builder().build().buildDiscountCard();
 
-        when(discountCardService.update(id, cardToUpdate)).thenReturn(expected);
-        var actual = discountCardService.update(id, cardToUpdate);
+        when(discountCardRepository.findById(discountCardId)).thenReturn(Optional.of(existingDiscountCard));
 
-        assertEquals(expected.getDiscountCard(), actual.getDiscountCard());
-        assertEquals(expected.getDiscountAmount(), actual.getDiscountAmount());
+        discountCardService.update(discountCardId, discountCardUpdateDto);
+
+        verify(discountCardRepository, times(1)).findById(discountCardId);
+        verify(discountCardConverter, times(1)).merge(discountCardArgumentCaptor.capture(), eq(discountCardUpdateDto));
+        assertSame(existingDiscountCard, discountCardArgumentCaptor.getValue());
+    }
+
+    @Test
+    void updateShouldThrowCatNotFoundExceptionWhenCatNotFound() {
+        var discountCardId = DiscountCardTestBuilder.builder().build().buildId();
+        var discountCardUpdateDto = DiscountCardTestBuilder.builder().build().buildDiscountCardUpdateDto();
+
+        when(discountCardRepository.findById(discountCardId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> discountCardService.update(discountCardId, discountCardUpdateDto));
+        verify(discountCardRepository, times(1)).findById(discountCardId);
     }
 
     @Test
     void delete() {
-        Long id = DiscountCardTestBuilder.builder().build().buildDiscountCard().getId();
-        doNothing().when(discountCardService).delete(id);
+        var discountCardId = DiscountCardTestBuilder.builder().build().buildId();
 
-        assertDoesNotThrow(() -> discountCardService.delete(id));
+        discountCardService.delete(discountCardId);
+
+        verify(discountCardRepository).delete(discountCardId);
     }
 }

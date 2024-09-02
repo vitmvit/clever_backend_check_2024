@@ -2,7 +2,6 @@ package ru.clevertec.check.repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import ru.clevertec.check.exception.ConnectionException;
 import ru.clevertec.check.model.entity.Product;
 import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
@@ -11,7 +10,6 @@ import ru.clevertec.check.util.ProductTestBuilder;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProductRepositoryTest {
 
     private final ProductRepository productRepository = new ProductRepositoryImpl();

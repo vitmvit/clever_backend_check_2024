@@ -5,8 +5,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.clevertec.check.converter.DiscountCardConverter;
+import ru.clevertec.check.converter.DiscountCardConverterImpl;
 import ru.clevertec.check.model.dto.create.DiscountCardCreateDto;
 import ru.clevertec.check.model.dto.update.DiscountCardUpdateDto;
+import ru.clevertec.check.repository.DiscountCardRepository;
+import ru.clevertec.check.repository.impl.DiscountCardRepositoryImpl;
 import ru.clevertec.check.service.DiscountCardService;
 import ru.clevertec.check.service.impl.DiscountCardServiceImpl;
 
@@ -21,7 +25,9 @@ import java.io.PrintWriter;
 @WebServlet
 public class DiscountCardController extends HttpServlet {
 
-    private final DiscountCardService discountCardService = new DiscountCardServiceImpl();
+    private final DiscountCardRepository discountCardRepository = new DiscountCardRepositoryImpl();
+    private final DiscountCardConverter discountCardConverter = new DiscountCardConverterImpl();
+    private final DiscountCardService discountCardService = new DiscountCardServiceImpl(discountCardRepository, discountCardConverter);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**

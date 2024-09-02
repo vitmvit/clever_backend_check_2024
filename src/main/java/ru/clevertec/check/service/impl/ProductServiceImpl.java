@@ -1,22 +1,22 @@
 package ru.clevertec.check.service.impl;
 
+import lombok.AllArgsConstructor;
 import ru.clevertec.check.converter.ProductConverter;
-import ru.clevertec.check.converter.ProductConverterImpl;
 import ru.clevertec.check.exception.NotFoundException;
 import ru.clevertec.check.model.dto.ProductDto;
 import ru.clevertec.check.model.dto.create.ProductCreateDto;
 import ru.clevertec.check.model.dto.update.ProductUpdateDto;
 import ru.clevertec.check.repository.ProductRepository;
-import ru.clevertec.check.repository.impl.ProductRepositoryImpl;
 import ru.clevertec.check.service.ProductService;
 
 /**
  * Реализация сервиса продуктов.
  */
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository productRepository = new ProductRepositoryImpl();
-    private final ProductConverter productConverter = new ProductConverterImpl();
+    private final ProductRepository productRepository;
+    private final ProductConverter productConverter;
 
     /**
      * Находит продукт по его идентификатору.

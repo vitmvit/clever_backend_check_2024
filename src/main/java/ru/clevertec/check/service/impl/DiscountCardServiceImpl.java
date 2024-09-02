@@ -1,22 +1,22 @@
 package ru.clevertec.check.service.impl;
 
+import lombok.AllArgsConstructor;
 import ru.clevertec.check.converter.DiscountCardConverter;
-import ru.clevertec.check.converter.DiscountCardConverterImpl;
 import ru.clevertec.check.exception.NotFoundException;
 import ru.clevertec.check.model.dto.DiscountCardDto;
 import ru.clevertec.check.model.dto.create.DiscountCardCreateDto;
 import ru.clevertec.check.model.dto.update.DiscountCardUpdateDto;
 import ru.clevertec.check.repository.DiscountCardRepository;
-import ru.clevertec.check.repository.impl.DiscountCardRepositoryImpl;
 import ru.clevertec.check.service.DiscountCardService;
 
 /**
  * Реализация сервиса дисконтных карт.
  */
+@AllArgsConstructor
 public class DiscountCardServiceImpl implements DiscountCardService {
 
-    private final DiscountCardRepository discountCardRepository = new DiscountCardRepositoryImpl();
-    private final DiscountCardConverter discountCardConverter = new DiscountCardConverterImpl();
+    private final DiscountCardRepository discountCardRepository;
+    private final DiscountCardConverter discountCardConverter;
 
     /**
      * Находит дисконтную карту по её идентификатору.
