@@ -22,6 +22,14 @@ public class DiscountCardTestBuilder {
         return id;
     }
 
+    public Integer buildNumber() {
+        return number;
+    }
+
+    public Short buildAmount() {
+        return amount;
+    }
+
     public DiscountCard buildDiscountCard() {
         return new DiscountCard(id, number, amount);
     }
